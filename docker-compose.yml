@@ -7,16 +7,16 @@ services:
     ports:
       - "5400:5400"
     env_file:
-      - ./.env
+      - ./.env.production
     depends_on:
       postgres:
           condition: service_healthy
   postgres:
-    image: postgres:latest
+    image: postgres:alpine
     ports:
       - "5432:5432"
     env_file:
-      - ./.env
+      - ./.env.production
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:

@@ -1,6 +1,6 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 import 'reflect-metadata';
 
@@ -12,7 +12,7 @@ import {
 } from '~/app/filters/http-expection';
 
 (async () => {
-  const app = await NestFactory.create(AppModule, { logger: false });
+  const app = await NestFactory.create(AppModule);
 
   app.enableCors({
     credentials: true,
@@ -30,16 +30,19 @@ import {
     new AllExceptionsFilter(httpAdapter),
   );
 
-  const config = new DocumentBuilder().setTitle('nbun').build();
+  const config = new DocumentBuilder().setTitle('NBUN').build();
 
   app.setGlobalPrefix('api');
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(env.PORT, () =>
-    console.log(
-      'running in http://localhost:'.concat(env.PORT).concat('/api/health'),
-    ),
-  );
+  await app.listen(env.PORT, () => {
+    Logger.log(
+      'Running in http://localhost:'.concat(env.PORT).concat('/api/health'),
+    );
+    Logger.log(
+      'Docs in http://localhost:'.concat(env.PORT).concat('/api/docs'),
+    );
+  });
 })();
