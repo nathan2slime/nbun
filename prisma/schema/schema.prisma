@@ -1,0 +1,55 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+  binaryTargets   = ["debian-openssl-1.1.x", "linux-musl-openssl-3.0.x", "darwin", "darwin-arm64", "debian-openssl-3.0.x"]
+}
+
+model User {
+  id       String  @id @default(cuid())
+  username String  @unique @db.VarChar(255)
+  password String
+  avatar   String  @default("default")
+  score    Score[]
+}
+
+model Quiz {
+  id           String         @id @default(cuid())
+  score        Score[]
+  quizQuestion QuizQuestion[]
+}
+
+model QuizQuestion {
+  id String @id @default(cuid())
+
+  question   Question @relation(fields: [questionId], references: [id])
+  quiz       Quiz     @relation(fields: [quizId], references: [id])
+  questionId String
+  quizId     String
+
+  @@unique([quizId, questionId])
+}
+
+model Question {
+  id    String @id @default(cuid())
+  title String
+
+  answers      String[]
+  answer       Int
+  quizQuestion QuizQuestion[]
+}
+
+model Score {
+  id String @id @default(cuid())
+
+  value Int
+
+  quiz   Quiz   @relation(fields: [quizId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+  quizId String
+  userId String
+}

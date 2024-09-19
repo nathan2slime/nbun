@@ -5,6 +5,6 @@
     }
   ],
   "workbench.colorTheme": "Rosé Pine Dawn",
-  "workbench.iconTheme": "rose-pine-icons",
+  "workbench.iconTheme": "catppuccin-latte",
   "typescript.preferences.importModuleSpecifier": "non-relative"
 }

@@ -4,11 +4,10 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AbstractHttpAdapter } from '@nestjs/core';
-
-import { logger } from '~/logger';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -50,7 +49,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
     };
-    logger.error(message.toLowerCase());
+    Logger.error(message);
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }

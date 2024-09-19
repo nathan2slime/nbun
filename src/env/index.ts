@@ -2,7 +2,9 @@ import { parseEnv } from 'znv';
 import { z } from 'zod';
 import { config } from 'dotenv';
 
-config();
+config({
+  path: ['.env.local', '.env', '.env.development.local'],
+});
 
 const { NODE_ENV } = parseEnv(process.env, {
   NODE_ENV: z
