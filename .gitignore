@@ -1,5 +1,17 @@
+# dependencies
 node_modules
+
+# output
 dist
+.next
+build
+
+# cache
+.cache
+.turbo
+
+# envs
 .env.local
 .env.production
 .env
+
