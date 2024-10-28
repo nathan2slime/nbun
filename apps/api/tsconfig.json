@@ -1,0 +1,10 @@
+{
+  "extends": "@nbun/tsconfig/nestjs.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["src/*"]
+    }
+  }
+}

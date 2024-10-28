@@ -1,0 +1,13 @@
+model User {
+  id       String @id @default(uuid())
+  username String @unique @db.VarChar(255)
+  password String
+  avatar   String @default("default")
+
+  session       Session[]
+  quizzes       Quiz[]
+  quizResponses QuizResponse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
