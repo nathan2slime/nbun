@@ -1,48 +1,51 @@
 model Quiz {
-  id        String      @id @default(uuid())
-  title     String
-  userId    String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id     String @id @default(uuid())
+  title  String
+  userId String
 
   questions Question[]
-  createdBy User        @relation(fields: [userId], references: [id])
+  createdBy User       @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 }
 
 model Question {
-  id       String           @id @default(uuid())
-  title    String
-  quizId   String
+  id     String @id @default(uuid())
+  title  String
+  quizId String
 
-  quiz     Quiz             @relation(fields: [quizId], references: [id])
-  options  QuestionOption[]
+  quiz      Quiz               @relation(fields: [quizId], references: [id])
+  options   QuestionOption[]
   responses QuestionResponse[]
 }
 
 model QuestionOption {
-  id         String           @id @default(uuid())
+  id         String @id @default(uuid())
   title      String
   questionId String
 
-  question   Question         @relation(fields: [questionId], references: [id])
-  responses  QuestionResponse[]
+  question  Question           @relation(fields: [questionId], references: [id])
+  responses QuestionResponse[]
 }
 
 model QuizResponse {
-  id         String           @id @default(uuid())
-  userId     String
+  id     String @id @default(uuid())
+  userId String
 
-  user       User             @relation(fields: [userId], references: [id])
-  responses  QuestionResponse[]
+  user      User               @relation(fields: [userId], references: [id])
+  responses QuestionResponse[]
 }
 
 model QuestionResponse {
-  id               String           @id @default(uuid())
+  id               String @id @default(uuid())
   quizResponseId   String
   questionId       String
   questionOptionId String
 
-  quizResponse     QuizResponse     @relation(fields: [quizResponseId], references: [id])
-  question         Question         @relation(fields: [questionId], references: [id])
-  selectedOption   QuestionOption   @relation(fields: [questionOptionId], references: [id])
+  quizResponse   QuizResponse   @relation(fields: [quizResponseId], references: [id])
+  question       Question       @relation(fields: [questionId], references: [id])
+  selectedOption QuestionOption @relation(fields: [questionOptionId], references: [id])
 }
+

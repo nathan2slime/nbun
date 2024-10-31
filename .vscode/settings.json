@@ -1,10 +1,5 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
-  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorTheme": "Rosé Pine Dawn",
   "workbench.iconTheme": "catppuccin-latte",
   "typescript.preferences.importModuleSpecifier": "non-relative"
 }
