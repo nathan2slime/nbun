@@ -12,4 +12,8 @@ export class QuestionService {
       data: { ...payload, quiz: { connect: { id: quizId } } }
     })
   }
+
+  async delete(id: string) {
+    return this.prisma.question.delete({ where: { id } })
+  }
 }

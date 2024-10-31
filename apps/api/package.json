@@ -2,7 +2,7 @@
   "name": "@nbun/api",
   "scripts": {
     "build": "nest build",
-    "dev": "nest start --watch",
+    "dev": "nest start --watch --preserveWatchOutput",
     "debug": "nest start --debug --watch",
     "start": "node dist/main"
   },
@@ -12,6 +12,7 @@
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.2.0",
+    "prisma": "^5.21.1",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
