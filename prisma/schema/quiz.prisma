@@ -1,3 +1,9 @@
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
 model Quiz {
   id     String @id @default(uuid())
   title  String
@@ -5,9 +11,10 @@ model Quiz {
 
   questions Question[]
   createdBy User       @relation(fields: [userId], references: [id])
+  startAt   DateTime?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -15,6 +22,8 @@ model Question {
   id     String @id @default(uuid())
   title  String
   quizId String
+
+  difficulty Difficulty @default(MEDIUM)
 
   quiz      Quiz               @relation(fields: [quizId], references: [id])
   options   QuestionOption[]
@@ -48,4 +57,3 @@ model QuestionResponse {
   question       Question       @relation(fields: [questionId], references: [id])
   selectedOption QuestionOption @relation(fields: [questionOptionId], references: [id])
 }
-

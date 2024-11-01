@@ -12,3 +12,16 @@ export class UpdateQuizDto {
   @ApiProperty({ required: false })
   title: string
 }
+
+export class JoinMemberDto {
+  @IsString()
+  quizId: string
+
+  @IsString()
+  memberId: string
+}
+
+export class GetQuizMembersDto {
+  @IsString()
+  quizId: string
+}

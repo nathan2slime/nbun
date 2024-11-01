@@ -11,9 +11,12 @@ import {
   HttpExceptionFilter
 } from '~/app/filters/http-expection'
 import { logger } from '~/logger'
+import { redisClient } from '~/database/redis'
 
 const main = async () => {
-  const app = await NestFactory.create(AppModule, { logger: false })
+  const app = await NestFactory.create(AppModule)
+
+  await redisClient.connect()
 
   app.enableCors({
     credentials: true,
