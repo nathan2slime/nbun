@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
+import { CreateQuestionOptionDto } from '~/app/question-option/question-option.dto'
+import { QuestionOptionService } from '~/app/question-option/question-option.service'
 import { CreateQuestionDto } from '~/app/question/question.dto'
 import { PrismaService } from '~/database/prisma.service'
 
