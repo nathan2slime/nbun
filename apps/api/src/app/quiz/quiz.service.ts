@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { User } from '@prisma/client'
+import { Session } from '@prisma/client'
 
 import { CreateQuizDto, UpdateQuizDto } from '~/app/quiz/quiz.dto'
 import { PrismaService } from '~/database/prisma.service'
@@ -8,13 +8,13 @@ import { PrismaService } from '~/database/prisma.service'
 export class QuizService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateQuizDto, user: User) {
+  async create(data: CreateQuizDto, session: Session) {
     return this.prisma.quiz.create({
       data: {
         ...data,
         createdBy: {
           connect: {
-            id: user.id
+            id: session.userId
           }
         }
       }

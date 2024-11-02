@@ -44,13 +44,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const message = exception.message
 
+    exception.message.toLowerCase()
+
     const responseBody = {
       message,
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest())
     }
-    logger.error(message)
+    logger.error(exception.message)
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus)
   }

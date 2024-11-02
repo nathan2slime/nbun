@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport'
 import { AuthController } from '~/app/auth/auth.controller'
 import { AuthService } from '~/app/auth/auth.service'
 import { JwtStrategy } from '~/app/auth/auth.strategy'
+import { JwtRefreshStrategy } from '~/app/auth/refresh.strategy'
 import { SessionModule } from '~/app/session/session.module'
 import { UserModule } from '~/app/user/user.module'
 import { env } from '~/env'
@@ -21,7 +22,7 @@ import { env } from '~/env'
     SessionModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
   exports: [AuthService]
 })
 export class AuthModule {}

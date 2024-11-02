@@ -1,10 +1,14 @@
 'use client'
 
 import { NextPage } from 'next'
-import { SelectIcon } from '~/components/select-icon'
-import { useState } from 'react'
-import { Input } from '~/components/ui/input'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import dynamic from 'next/dynamic'
+import { useMutation } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
+
+import { Input } from '~/components/ui/input'
 import {
   Form,
   FormControl,
@@ -13,93 +17,101 @@ import {
   FormLabel,
   FormMessage
 } from '~/components/ui/form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { signingSchema } from '~/app/schemas/signing'
+import { signingSchema, SigningSchema } from '~/lib/schemas/auth.schemas'
+import { signingMutation } from '~/api/mutations/signing.mutation'
 import { Button } from '~/components/ui/button'
+import { Props } from '~/components/loading'
+import { authState } from '~/store/auth.state'
 
 const Signing: NextPage = () => {
-  const [selectedAvatar, setSelectedAvatar] = useState(1)
+  const router = useRouter()
+  const Loading = dynamic<Props>(
+    async () => (await import('~/components/loading')).Loading,
+    { ssr: false }
+  )
 
-  const form = useForm({
+  const mutation = useMutation({
+    mutationKey: ['signing'],
+    mutationFn: signingMutation
+  })
+
+  const form = useForm<SigningSchema>({
+    mode: 'all',
     resolver: zodResolver(signingSchema)
   })
-  const { register, handleSubmit, control } = form
 
-  const avatars = [
-    {
-      id: 1,
-      name: 'Onça',
-      img: '/images/jaguar.png'
-    },
-    {
-      id: 2,
-      name: 'Coala',
-      img: '/images/koala.png'
-    },
-    {
-      id: 3,
-      name: 'Arara',
-      img: '/images/macaw.png'
-    }
-  ]
+  const {
+    handleSubmit,
+    formState: { isValid },
+    control
+  } = form
 
-  const submitSigning = () => {}
+  const onSubmit = (values: SigningSchema) =>
+    mutation.mutate(values, {
+      onSuccess(data) {
+        toast.success('Sucesso')
+
+        authState.data = data
+        authState.logged = true
+
+        router.push('/')
+      }
+    })
 
   return (
-    <div className="bg-background flex h-screen w-screen flex-col px-3 pt-5">
+    <div className="bg-background flex h-screen w-screen flex-col items-center justify-center p-4">
       <Form {...form}>
         <form
-          className={'flex w-full flex-col gap-5'}
-          onSubmit={handleSubmit(submitSigning)}
+          className="bg-card border-border flex w-full max-w-md flex-col rounded-lg border px-4 py-6 shadow-sm"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <p className={'text-primary text-3xl font-semibold'}>
-            Crie seu perfil
-          </p>
+          <h1 className="text-primary text-xl font-semibold">Bem-vindo</h1>
 
-          <div className={'flex flex-col items-center gap-2'}>
-            <div className={'flex gap-2'}>
-              {avatars.map(avatar => (
-                <SelectIcon
-                  onClick={() => setSelectedAvatar(avatar.id)}
-                  selected={selectedAvatar == avatar.id}
-                  img={avatar.img}
-                  name={avatar.name}
-                />
-              ))}
-            </div>
+          <div className="my-8 flex flex-col gap-2">
+            <FormField
+              control={control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Apelido</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Peter Packer"
+                      autoComplete="username"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <p className={'text-primary-foreground'}>Escolha um Avatar</p>
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      autoCapitalize="password"
+                      type="password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
-          <FormField
-            control={control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input placeholder="ex: João da Silva" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          <Button disabled={!isValid} className="uppercase">
+            {mutation.isPending ? (
+              <Loading name="mirage" color="red" size="60" speed="1.75" />
+            ) : (
+              'Continuar'
             )}
-          />
-
-          <FormField
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Senha</FormLabel>
-                <FormControl>
-                  <Input {...field} type={'password'} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button>Enviar</Button>
+          </Button>
         </form>
       </Form>
     </div>

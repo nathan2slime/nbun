@@ -1,6 +1,7 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
-import { Logger, ValidationPipe } from '@nestjs/common'
+import { ValidationPipe } from '@nestjs/common'
+import cookieParser from 'cookie-parser'
 
 import 'reflect-metadata'
 
@@ -18,6 +19,7 @@ const main = async () => {
 
   await redisClient.connect()
 
+  app.use(cookieParser())
   app.enableCors({
     credentials: true,
     origin: env.APP_URL

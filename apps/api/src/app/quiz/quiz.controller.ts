@@ -13,7 +13,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
 import { CreateQuizDto, UpdateQuizDto } from '~/app/quiz/quiz.dto'
 import { QuizService } from '~/app/quiz/quiz.service'
-import { Request } from '~/types/auth.types'
+import { Request } from '~/types/app.types'
 
 @ApiTags('Quiz')
 @UseGuards(JwtAuthGuard)
