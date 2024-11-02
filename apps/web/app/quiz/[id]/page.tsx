@@ -4,7 +4,7 @@ import { NextPage } from 'next'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-import { socket } from '~/api'
+import { socket } from '~/api/client'
 
 type NewMember = {
   quizId: string
@@ -25,10 +25,9 @@ const Home: NextPage<Props> = () => {
   const [input, setInput] = useState<string>('')
 
   const addNewMember = (data: string) => {
-    console.log(data)
-
     setMessages(messages => [...messages, data])
   }
+
   useEffect(() => {
     socket.emit('members', { quizId: id })
     socket.on('members', addNewMember)

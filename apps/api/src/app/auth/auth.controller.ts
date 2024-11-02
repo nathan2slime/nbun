@@ -10,13 +10,12 @@ import {
   Patch
 } from '@nestjs/common'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Request, Response } from 'express'
-import { Session } from '@prisma/client'
+import { Response } from 'express'
 import { AuthGuard } from '@nestjs/passport'
 
 import { AuthService } from '~/app/auth/auth.service'
-import { SignInDto } from '~/app/auth/auth.dto'
-
+import { SignInDto, SignUpDto } from '~/app/auth/auth.dto'
+import { Request } from '~/types/app.types'
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
 import { env } from '~/env'
 
@@ -39,7 +38,7 @@ export class AuthController {
   })
   @UseGuards(JwtAuthGuard)
   async signOut(@Req() req: Request, @Res() res: Response) {
-    const session = req.user as Session
+    const session = req.user
     await this.authService.signOut(session)
     return res.status(HttpStatus.OK).send()
   }
@@ -50,7 +49,7 @@ export class AuthController {
     status: 200
   })
   async refresh(@Req() req: Request, @Res() res: Response) {
-    const session = req.user as Session
+    const session = req.user
     const { accessToken, refreshToken } = session
 
     res.cookie(
@@ -72,6 +71,28 @@ export class AuthController {
     const data = await this.authService.signIn(body)
 
     const { accessToken, refreshToken } = data
+    res.cookie(
+      env.AUTH_COOKIE,
+      { accessToken, refreshToken },
+      {
+        httpOnly: true,
+        expires: new Date(
+          Date.now() + require('ms')(env.REFRESH_TOKEN_EXPIRES_IN)
+        )
+      }
+    )
+    return res.status(HttpStatus.OK).json(data)
+  }
+
+  @Post('signup')
+  @ApiResponse({ status: 200 })
+  async signUp(@Body() body: SignUpDto, @Res() res: Response) {
+    console.log(body)
+
+    const data = await this.authService.signUp(body)
+
+    const { accessToken, refreshToken } = data
+
     res.cookie(
       env.AUTH_COOKIE,
       { accessToken, refreshToken },

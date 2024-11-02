@@ -6,6 +6,7 @@
   "scripts": {
     "prepare": "husky",
     "dev": "dotenv -- turbo run dev",
+    "build": "dotenv -- turbo run build",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "db:migrate:dev": "dotenv -- prisma migrate dev",
     "db:migrate:deploy": "dotenv -- prisma migrate deploy",
