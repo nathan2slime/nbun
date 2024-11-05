@@ -11,18 +11,15 @@ export class WebSocketSessionService {
   async connect(data: WebSocketSessionDto) {
     const key = this.getKey(data.clientId)
 
-    await redisClient.set(key, data.memberId)
+    await redisClient.json.set(key, '$', { ...data })
   }
 
   async getConnection(clientId: string) {
     const key = this.getKey(clientId)
 
-    const data = (await redisClient.json.get(key)) as Omit<
-      WebSocketSessionDto,
-      'clientId'
-    >
+    const data = await redisClient.json.get(key + '.$')
 
-    return { ...data, clientId }
+    return { ...(data as object), clientId } as WebSocketSessionDto
   }
 
   async disconnect(data: WebSocketSessionDto) {
