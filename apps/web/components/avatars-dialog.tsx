@@ -21,7 +21,7 @@ export const AvatarsDialog = ({ children, avatar, onChange }: Props) => {
       <Dialog>
         <DialogTrigger asChild>{children}</DialogTrigger>
 
-        <DialogContent className="max-w-xs rounded-lg">
+        <DialogContent className="w-[90%] max-w-xs rounded-lg">
           <DialogHeader className="text-start">
             <DialogTitle>Personalize-se</DialogTitle>
             <DialogDescription>

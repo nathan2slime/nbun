@@ -4,8 +4,8 @@ import {
   isServer
 } from '@tanstack/react-query'
 
-const makeQueryClient = () => {
-  return new QueryClient({
+const makeQueryClient = () =>
+  new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000
@@ -16,7 +16,6 @@ const makeQueryClient = () => {
       }
     }
   })
-}
 
 let browserQueryClient: QueryClient | undefined = undefined
 

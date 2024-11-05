@@ -7,7 +7,7 @@ import { authState } from '~/store/auth.state'
 const Home = () => {
   const { data, logged } = useSnapshot(authState)
 
-  return <div>{JSON.stringify(data)}</div>
+  return <div></div>
 }
 
 export default Home

@@ -87,8 +87,6 @@ export class AuthController {
   @Post('signup')
   @ApiResponse({ status: 200 })
   async signUp(@Body() body: SignUpDto, @Res() res: Response) {
-    console.log(body)
-
     const data = await this.authService.signUp(body)
 
     const { accessToken, refreshToken } = data

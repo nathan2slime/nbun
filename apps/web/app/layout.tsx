@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Baloo_2 } from 'next/font/google'
-import { Toaster } from 'react-hot-toast'
 
 import { AppChildren } from '~/types'
 
@@ -21,18 +20,14 @@ const baloo = Baloo_2({
   weight: ['400', '500', '600', '700', '800']
 })
 
-const RootLayout = ({ children }: Readonly<AppChildren>) => {
-  return (
-    <html lang="pt">
-      <body className={cn(baloo.className, 'dark')}>
-        <Providers>
-          <AuthGuard>{children}</AuthGuard>
-        </Providers>
-
-        <Toaster />
-      </body>
-    </html>
-  )
-}
+const RootLayout = ({ children }: Readonly<AppChildren>) => (
+  <html lang="pt">
+    <body className={cn(baloo.className, 'dark')}>
+      <Providers>
+        <AuthGuard>{children}</AuthGuard>
+      </Providers>
+    </body>
+  </html>
+)
 
 export default RootLayout
