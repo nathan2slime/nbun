@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
-import { CreateQuestionDto } from '~/app/question/question.dto'
+import {
+  CreateQuestionDto,
+  UpdateQuestionDto
+} from '~/app/question/question.dto'
 import { PrismaService } from '~/database/prisma.service'
 
 @Injectable()
@@ -15,5 +18,9 @@ export class QuestionService {
 
   async delete(id: string) {
     return this.prisma.question.delete({ where: { id } })
+  }
+
+  async update(id: string, data: UpdateQuestionDto) {
+    return this.prisma.question.update({ where: { id }, data })
   }
 }

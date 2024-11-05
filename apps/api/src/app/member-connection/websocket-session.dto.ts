@@ -6,4 +6,15 @@ export class WebSocketSessionDto {
 
   @IsString()
   memberId: string
+
+  @IsString()
+  quizId: string
+}
+
+export class GetWebSocketSessionDto {
+  @IsString()
+  memberId: string
+
+  @IsString()
+  quizId: string
 }

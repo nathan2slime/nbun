@@ -32,12 +32,12 @@ export class QuizController {
     return this.quizService.getById(id)
   }
 
-  @Put('update')
+  @Put('update/:id')
   async update(@Body() data: UpdateQuizDto, @Param('id') id: string) {
     return this.quizService.update(id, data)
   }
 
-  @Delete('delete')
+  @Delete('delete/:id')
   async delete(@Param('id') id: string) {
     return this.quizService.delete(id)
   }
