@@ -1,5 +1,6 @@
 import { UsePipes, ValidationPipe } from '@nestjs/common'
 import {
+  ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -13,7 +14,12 @@ import { map } from 'rxjs/operators'
 import { Server, Socket } from 'socket.io'
 
 import { QuizMemberService } from '~/app/quiz-member/quiz-member.service'
-import { GetQuizMembersDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
+import {
+  GetMemberIdDto,
+  GetQuizMembersDto,
+  JoinMemberDto
+} from '~/app/quiz/quiz.dto'
+import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
 
 import { NODE_ENV, env } from '~/env'
 
@@ -24,12 +30,34 @@ import { NODE_ENV, env } from '~/env'
 })
 @UsePipes(ValidationPipe)
 export class QuizGateway implements OnGatewayDisconnect {
-  constructor(private readonly quizMemberService: QuizMemberService) {}
+  constructor(
+    private readonly quizMemberService: QuizMemberService,
+    private readonly webSocketSessionService: WebSocketSessionService
+  ) {}
 
   @WebSocketServer()
   server: Server
 
-  handleDisconnect(client: Socket) {}
+  async handleDisconnect(client: Socket) {
+    const clientId = client.id
+
+    const connection =
+      await this.webSocketSessionService.getConnection(clientId)
+
+    if (connection) {
+      const { memberId } = connection
+
+      await this.webSocketSessionService.disconnect(connection)
+    }
+  }
+
+  @SubscribeMessage('connect')
+  async connect(
+    @MessageBody() data: GetMemberIdDto,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.webSocketSessionService.connect({ ...data, clientId: client.id })
+  }
 
   @SubscribeMessage('members')
   async getMembers(

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Put,
@@ -24,6 +25,11 @@ export class QuizController {
   @Post('create')
   async create(@Body() data: CreateQuizDto, @Req() req: Request) {
     return this.quizService.create(data, req.user)
+  }
+
+  @Get('show/:id')
+  async show(@Param('id') id: string) {
+    return this.quizService.getById(id)
   }
 
   @Put('update')
