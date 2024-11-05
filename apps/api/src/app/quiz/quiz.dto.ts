@@ -25,3 +25,8 @@ export class GetQuizMembersDto {
   @IsString()
   quizId: string
 }
+
+export class GetMemberIdDto {
+  @IsString()
+  memberId: string
+}
