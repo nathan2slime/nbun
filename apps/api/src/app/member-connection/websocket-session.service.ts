@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common'
 
-import { WebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
+import {
+  GetWebSocketSessionDto,
+  WebSocketSessionDto
+} from '~/app/member-connection/websocket-session.dto'
 import { redisClient } from '~/database/redis'
 
 @Injectable()
@@ -14,15 +17,18 @@ export class WebSocketSessionService {
   async getConnection(clientId: string) {
     const key = this.getKey(clientId)
 
-    const memberId = await redisClient.get(key)
+    const data = (await redisClient.json.get(key)) as Omit<
+      WebSocketSessionDto,
+      'clientId'
+    >
 
-    return { memberId, clientId }
+    return { ...data, clientId }
   }
 
   async disconnect(data: WebSocketSessionDto) {
     const key = this.getKey(data.clientId)
 
-    await redisClient.del(key)
+    await redisClient.json.del(key)
   }
 
   getKey(clientId: string) {

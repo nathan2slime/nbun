@@ -22,7 +22,7 @@ export class UserService {
   }
 
   async getByUsername(username: string) {
-    return this.prisma.user.findUnique({ where: { username } })
+    return this.prisma.user.findFirst({ where: { username } })
   }
 
   async getOnlyPassword(where: Prisma.UserWhereUniqueInput) {

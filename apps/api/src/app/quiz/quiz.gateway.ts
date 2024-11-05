@@ -14,12 +14,9 @@ import { map } from 'rxjs/operators'
 import { Server, Socket } from 'socket.io'
 
 import { QuizMemberService } from '~/app/quiz-member/quiz-member.service'
-import {
-  GetMemberIdDto,
-  GetQuizMembersDto,
-  JoinMemberDto
-} from '~/app/quiz/quiz.dto'
-import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
+import { GetQuizMembersDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
+import { WebSocketSessionService } from '~/app/member-connection/websocket-session.service'
+import { GetWebSocketSessionDto } from '~/app/member-connection/websocket-session.dto'
 
 import { NODE_ENV, env } from '~/env'
 
@@ -45,18 +42,19 @@ export class QuizGateway implements OnGatewayDisconnect {
       await this.webSocketSessionService.getConnection(clientId)
 
     if (connection) {
-      const { memberId } = connection
-
       await this.webSocketSessionService.disconnect(connection)
     }
   }
 
   @SubscribeMessage('connect')
   async connect(
-    @MessageBody() data: GetMemberIdDto,
+    @MessageBody() data: GetWebSocketSessionDto,
     @ConnectedSocket() client: Socket
   ) {
-    await this.webSocketSessionService.connect({ ...data, clientId: client.id })
+    await this.webSocketSessionService.connect({
+      ...data,
+      clientId: client.id
+    })
   }
 
   @SubscribeMessage('members')
