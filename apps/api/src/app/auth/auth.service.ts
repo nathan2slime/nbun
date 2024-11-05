@@ -55,6 +55,6 @@ export class AuthService {
   }
 
   async signOut(session: Session) {
-    await this.sessionService.expireSession(session.id)
+    await this.sessionService.expire(session.id)
   }
 }

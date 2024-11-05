@@ -14,6 +14,8 @@ export class SessionService {
   ) {}
 
   async create(userId: string) {
+    await this.deleteAllByUserId(userId)
+
     const session = await this.prisma.session.create({
       data: {
         user: {
@@ -53,7 +55,7 @@ export class SessionService {
     return { ...data, user }
   }
 
-  async expireSession(id: string) {
+  async expire(id: string) {
     await this.prisma.session.delete({
       where: { id }
     })
@@ -79,6 +81,10 @@ export class SessionService {
 
       return { ...session, user }
     }
+  }
+
+  async deleteAllByUserId(userId: string) {
+    return this.prisma.session.deleteMany({ where: { userId } })
   }
 
   async findById(id: string) {

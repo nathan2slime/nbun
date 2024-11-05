@@ -1,3 +1,4 @@
+import { api } from '~/api/client'
 import { AuthResponse, SignUpPayload } from '~/types/auth.types'
 
 export const signUpMutation = async (payload: SignUpPayload) => {

@@ -8,6 +8,7 @@ import { useMutation } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 import { AvatarButton } from '~/components/avatar-button'
 import { Input } from '~/components/ui/input'
@@ -26,6 +27,7 @@ import { AvatarsDialog } from '~/components/avatars-dialog'
 import { signUpMutation } from '~/api/mutations/signup.mutation'
 import { Props } from '~/components/loading'
 import { authState } from '~/store/auth.state'
+import { Separator } from '~/components/ui/separator'
 
 const SignUp: NextPage = () => {
   const mutation = useMutation({
@@ -43,6 +45,8 @@ const SignUp: NextPage = () => {
   const form = useForm<SignUpSchema>({
     mode: 'all',
     defaultValues: {
+      password: '',
+      username: '',
       avatar: 'woin'
     },
     resolver: zodResolver(signUpSchema)
@@ -123,7 +127,11 @@ const SignUp: NextPage = () => {
                   <FormItem>
                     <FormLabel>Apelido</FormLabel>
                     <FormControl>
-                      <Input placeholder="Peter Packer" {...field} />
+                      <Input
+                        autoComplete="off"
+                        placeholder="Peter Packer"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,7 +145,7 @@ const SignUp: NextPage = () => {
                   <FormItem>
                     <FormLabel>Senha</FormLabel>
                     <FormControl>
-                      <Input {...field} type="password" />
+                      <Input autoComplete="off" {...field} type="password" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -147,11 +155,19 @@ const SignUp: NextPage = () => {
 
             <Button disabled={!isValid} className="w-full uppercase">
               {mutation.isPending ? (
-                <Loading name="mirage" color="red" size="60" speed="1.75" />
+                <Loading name="mirage" size="60" speed="1.75" />
               ) : (
                 'Continuar'
               )}
             </Button>
+
+            <Separator className="my-6" />
+
+            <Link href="/auth/signing" className="w-full text-sm font-semibold">
+              <Button className="w-full" variant="outline">
+                Login
+              </Button>
+            </Link>
           </div>
         </form>
       </Form>

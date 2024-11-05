@@ -13,16 +13,19 @@ api.interceptors.response.use(
   response => response,
   (error: AxiosError) => {
     const noNotifyPath = ['/api/auth', '/api/auth/refresh']
+
     if (error.response) {
       const data = error.response.data as Record<string, string>
 
       if (data) {
-        if (noNotifyPath.includes(data.path!)) Promise.resolve(null)
+        if (noNotifyPath.includes(data.path!)) return Promise.reject(error)
 
         toast.error(data.message!)
       }
+    } else {
+      toast.error(error.message)
     }
 
-    return Promise.resolve(null)
+    return Promise.reject(error)
   }
 )
