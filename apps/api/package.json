@@ -19,7 +19,6 @@
     "@nestjs/swagger": "^7.4.2",
     "@nestjs/websockets": "^10.4.6",
     "@prisma/client": "^5.19.1",
-    "@redis/json": "^1.0.7",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
