@@ -4,14 +4,14 @@ import { Session } from '~/types/auth.types'
 
 export type AuthState = {
   logged: boolean
-  data: Session | null
+  session: Session | null
 }
 
 export const storageKey = '@nbun/web'
 
 const INITIAL: AuthState = {
   logged: false,
-  data: null
+  session: null
 }
 
 export const authState = proxy<AuthState>(INITIAL)

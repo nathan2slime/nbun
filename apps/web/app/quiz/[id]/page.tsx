@@ -1,16 +1,10 @@
 'use client'
 
+import { QueryClient } from '@tanstack/react-query'
 import { NextPage } from 'next'
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
-import { socket } from '~/api/client'
-
-type NewMember = {
-  quizId: string
-
-  memberId: string
-}
+import { getQuizQuery } from '~/api/queries/get-quiz.query'
+import { QuizView } from '~/components/quiz-view'
 
 type Props = {
   params: {
@@ -18,53 +12,16 @@ type Props = {
   }
 }
 
-const Home: NextPage<Props> = () => {
-  const params = useParams()
-  const id = params.id
-  const [messages, setMessages] = useState<string[]>([])
-  const [input, setInput] = useState<string>('')
+const Home: NextPage<Props> = async ({ params }) => {
+  const quizId = params.id as string
+  const clientQuery = new QueryClient()
 
-  const addNewMember = (data: string) => {
-    setMessages(messages => [...messages, data])
-  }
+  const quiz = await clientQuery.fetchQuery({
+    queryKey: ['get-quiz', quizId],
+    queryFn: ({ queryKey: [_, quizId] }) => getQuizQuery(quizId!)
+  })
 
-  useEffect(() => {
-    socket.emit('members', { quizId: id })
-    socket.on('members', addNewMember)
-    socket.on('join:' + id, addNewMember)
-
-    return () => {
-      socket.off('join:' + id)
-      socket.off('members')
-    }
-  }, [])
-
-  const sendMessage = () => {
-    if (input) {
-      socket.emit('join', { quizId: id, memberId: input })
-      setInput('')
-    }
-  }
-
-  return (
-    <div>
-      <ul>
-        {messages.map((msg, index) => (
-          <li key={index}>
-            {id}:{msg}
-          </li>
-        ))}
-      </ul>
-
-      <input
-        type="text"
-        value={input}
-        onChange={e => setInput(e.target.value)}
-        placeholder="Digite uma mensagem"
-      />
-      <button onClick={sendMessage}>Enviar</button>
-    </div>
-  )
+  return <QuizView quiz={quiz} />
 }
 
 export default Home

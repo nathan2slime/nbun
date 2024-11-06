@@ -84,6 +84,9 @@ importers:
       '@prisma/client':
         specifier: ^5.19.1
         version: 5.21.1(prisma@5.21.1)
+      '@redis/json':
+        specifier: ^1.0.7
+        version: 1.0.7(@redis/client@1.6.0)
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3

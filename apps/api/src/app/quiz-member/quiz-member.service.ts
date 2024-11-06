@@ -12,9 +12,19 @@ export class QuizMemberService {
   }
 
   async hasIn(data: JoinMemberDto) {
+    if (data.quizId) {
+      const key = this.getKey(data.quizId)
+
+      return redisClient.sIsMember(key, data.memberId)
+    }
+  }
+
+  async remove(data: JoinMemberDto) {
     const key = this.getKey(data.quizId)
 
-    return redisClient.sIsMember(key, data.memberId)
+    if (data.quizId) {
+      await redisClient.sRem(key, data.memberId)
+    }
   }
 
   async get(data: GetQuizMembersDto) {
