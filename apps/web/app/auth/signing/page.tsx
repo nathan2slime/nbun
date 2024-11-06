@@ -57,7 +57,7 @@ const Signing: NextPage = () => {
       onSuccess(data) {
         toast.success('Sucesso')
 
-        authState.data = data
+        authState.session = data
         authState.logged = true
 
         router.push('/')

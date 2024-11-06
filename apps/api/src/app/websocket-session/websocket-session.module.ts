@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { WebSocketSessionService } from '~/app/member-connection/websocket-session.service'
+import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
 
 @Module({
   exports: [WebSocketSessionService],

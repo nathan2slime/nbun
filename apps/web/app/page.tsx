@@ -7,7 +7,7 @@ import { Avatar, AvatarImage } from '~/components/ui/avatar'
 import { authState } from '~/store/auth.state'
 
 const Home = () => {
-  const { data } = useSnapshot(authState)
+  const { session: data } = useSnapshot(authState)
 
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start p-2">

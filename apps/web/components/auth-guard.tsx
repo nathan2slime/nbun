@@ -38,7 +38,7 @@ export const AuthGuard = async ({ children }: AppChildren) => {
 
   return (
     <HydrationBoundary state={dehydrate(client)}>
-      <AuthProvider state={{ data: session, logged: !!session }}>
+      <AuthProvider state={{ session: session, logged: !!session }}>
         {children}
       </AuthProvider>
     </HydrationBoundary>

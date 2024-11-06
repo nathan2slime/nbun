@@ -8,7 +8,7 @@ type Props = AppChildren<{
 }>
 
 export const AuthProvider = ({ state, children }: Props) => {
-  authState.data = state.data
+  authState.session = state.session
   authState.logged = state.logged
 
   return <>{children}</>

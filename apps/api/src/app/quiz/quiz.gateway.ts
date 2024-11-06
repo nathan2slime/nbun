@@ -2,7 +2,6 @@ import { UsePipes, ValidationPipe } from '@nestjs/common'
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
@@ -15,8 +14,8 @@ import { Server, Socket } from 'socket.io'
 
 import { QuizMemberService } from '~/app/quiz-member/quiz-member.service'
 import { GetQuizMembersDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
-import { WebSocketSessionService } from '~/app/member-connection/websocket-session.service'
-import { GetWebSocketSessionDto } from '~/app/member-connection/websocket-session.dto'
+import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
+import { GetWebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
 
 import { NODE_ENV, env } from '~/env'
 
@@ -43,10 +42,12 @@ export class QuizGateway implements OnGatewayDisconnect {
 
     if (connection) {
       await this.webSocketSessionService.disconnect(connection)
+      await this.quizMemberService.remove(connection)
+      this.server.emit('leave:' + connection.quizId, connection)
     }
   }
 
-  @SubscribeMessage('connect')
+  @SubscribeMessage('onquiz')
   async connect(
     @MessageBody() data: GetWebSocketSessionDto,
     @ConnectedSocket() client: Socket
