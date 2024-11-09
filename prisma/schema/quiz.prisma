@@ -10,11 +10,12 @@ model Quiz {
   userId String
 
   questions Question[]
+  responses QuizResponse[]
   createdBy User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   startAt   DateTime?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model Question {
@@ -42,8 +43,10 @@ model QuizResponse {
   id     String @id @default(uuid())
   userId String
 
+  quiz      Quiz               @relation(fields: [quizId], references: [id])
   user      User               @relation(fields: [userId], references: [id])
   responses QuestionResponse[]
+  quizId    String
 }
 
 model QuestionResponse {

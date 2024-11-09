@@ -34,6 +34,11 @@ export class QuizController {
     return this.quizService.getById(id)
   }
 
+  @Get('my')
+  async my(@Req() req: Request) {
+    return this.quizService.getByUser(req.user.userId)
+  }
+
   @Get('start/:id')
   async start(@Param('id') id: string) {
     return this.quizService.start(id)
