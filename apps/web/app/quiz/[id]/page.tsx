@@ -1,5 +1,3 @@
-'use client'
-
 import { QueryClient } from '@tanstack/react-query'
 import { NextPage } from 'next'
 
@@ -7,13 +5,13 @@ import { getQuizQuery } from '~/api/queries/get-quiz.query'
 import { QuizView } from '~/components/quiz-view'
 
 type Props = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 const Home: NextPage<Props> = async ({ params }) => {
-  const quizId = params.id as string
+  const quizId = (await params).id
   const clientQuery = new QueryClient()
 
   const quiz = await clientQuery.fetchQuery({

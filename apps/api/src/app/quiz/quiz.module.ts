@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
 
 import { QuizMemberModule } from '~/app/quiz-member/quiz-member.module'
 import { QuizController } from '~/app/quiz/quiz.controller'
