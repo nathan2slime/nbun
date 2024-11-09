@@ -31,6 +31,7 @@ RUN pnpm install
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package.json ./package.json
 
 # Uncomment and use build args to enable remote caching
 # ARG TURBO_TEAM
@@ -53,4 +54,4 @@ COPY --from=installer /app .
 
 EXPOSE 5400
 
-CMD node apps/api/dist/main
+CMD pnpm db:migrate:deploy && node apps/api/dist/main

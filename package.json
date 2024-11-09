@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
+    "start": "dotenv -- turbo run start",
     "dev": "dotenv -- turbo run dev",
     "build": "dotenv -- turbo run build",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",

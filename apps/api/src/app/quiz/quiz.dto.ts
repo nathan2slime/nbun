@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Difficulty } from '@prisma/client'
 import { IsOptional, IsString } from 'class-validator'
 
 export class CreateQuizDto {
@@ -22,7 +21,7 @@ export class JoinMemberDto {
   memberId: string
 }
 
-export class GetQuizMembersDto {
+export class QuizIdDto {
   @IsString()
   quizId: string
 }

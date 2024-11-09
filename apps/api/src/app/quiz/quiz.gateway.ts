@@ -1,4 +1,4 @@
-import { UsePipes, ValidationPipe } from '@nestjs/common'
+import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common'
 import {
   ConnectedSocket,
   MessageBody,
@@ -13,23 +13,30 @@ import { map } from 'rxjs/operators'
 import { Server, Socket } from 'socket.io'
 
 import { QuizMemberService } from '~/app/quiz-member/quiz-member.service'
-import { GetQuizMembersDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
+import { QuizIdDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
 import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
 import { GetWebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
+import { JwtAuthGuard } from '~/app/auth/auth.guard'
+import { QuizService } from '~/app/quiz/quiz.service'
 
-import { NODE_ENV, env } from '~/env'
+import { env } from '~/env'
 
 @WebSocketGateway({
   cors: {
-    origin: NODE_ENV == 'development' ? '*' : env.APP_URL
+    origin: env.APP_URL,
+    credentials: true
   }
 })
 @UsePipes(ValidationPipe)
+@UseGuards(JwtAuthGuard)
 export class QuizGateway implements OnGatewayDisconnect {
   constructor(
     private readonly quizMemberService: QuizMemberService,
+    private readonly quizService: QuizService,
     private readonly webSocketSessionService: WebSocketSessionService
   ) {}
+
+  private times: Map<string, NodeJS.Timeout> = new Map()
 
   @WebSocketServer()
   server: Server
@@ -60,7 +67,7 @@ export class QuizGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('members')
   async getMembers(
-    @MessageBody() data: GetQuizMembersDto
+    @MessageBody() data: QuizIdDto
   ): Promise<Observable<WsResponse<string>>> {
     const members = await this.quizMemberService.get(data)
 
@@ -76,5 +83,12 @@ export class QuizGateway implements OnGatewayDisconnect {
 
       this.server.emit('join:' + data.quizId, data.memberId)
     }
+  }
+
+  @SubscribeMessage('start')
+  async start(@MessageBody() data: QuizIdDto) {
+    await this.quizService.start(data.quizId)
+
+    this.server.emit('start:' + data.quizId)
   }
 }

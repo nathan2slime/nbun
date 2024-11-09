@@ -2,7 +2,9 @@ import axios, { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
 import { io, Socket } from 'socket.io-client'
 
-export const socket: Socket = io(process.env.NEXT_PUBLIC_API_CLIENT_URL)
+export const socket: Socket = io(process.env.NEXT_PUBLIC_API_CLIENT_URL, {
+  withCredentials: true
+})
 
 export const api = axios.create({
   baseURL: new URL('api', process.env.NEXT_PUBLIC_API_CLIENT_URL).toString(),

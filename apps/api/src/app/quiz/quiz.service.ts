@@ -42,4 +42,23 @@ export class QuizService {
       data
     })
   }
+
+  async isOwner(quizId: string, userId: string) {
+    const count = await this.prisma.quiz.count({
+      where: { userId, id: quizId }
+    })
+
+    return count == 1
+  }
+
+  async start(id: string) {
+    return this.prisma.quiz.update({
+      where: {
+        id
+      },
+      data: {
+        startAt: new Date()
+      }
+    })
+  }
 }

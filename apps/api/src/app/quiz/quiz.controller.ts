@@ -7,12 +7,14 @@ import {
   Post,
   Put,
   Req,
-  UseGuards
+  UseGuards,
+  UseInterceptors
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
 import { CreateQuizDto, UpdateQuizDto } from '~/app/quiz/quiz.dto'
+import { QuizInterceptor } from '~/app/quiz/quiz.interceptor'
 import { QuizService } from '~/app/quiz/quiz.service'
 import { Request } from '~/types/app.types'
 
@@ -32,12 +34,19 @@ export class QuizController {
     return this.quizService.getById(id)
   }
 
+  @Get('start/:id')
+  async start(@Param('id') id: string) {
+    return this.quizService.start(id)
+  }
+
   @Put('update/:id')
+  @UseInterceptors(QuizInterceptor)
   async update(@Body() data: UpdateQuizDto, @Param('id') id: string) {
     return this.quizService.update(id, data)
   }
 
   @Delete('delete/:id')
+  @UseInterceptors(QuizInterceptor)
   async delete(@Param('id') id: string) {
     return this.quizService.delete(id)
   }

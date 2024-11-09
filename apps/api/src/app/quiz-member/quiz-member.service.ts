@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { GetQuizMembersDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
+import { QuizIdDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
 import { redisClient } from '~/database/redis'
 
 @Injectable()
@@ -27,7 +27,7 @@ export class QuizMemberService {
     }
   }
 
-  async get(data: GetQuizMembersDto) {
+  async get(data: QuizIdDto) {
     const key = this.getKey(data.quizId)
 
     return redisClient.sMembers(key)
