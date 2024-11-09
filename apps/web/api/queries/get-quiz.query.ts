@@ -1,5 +1,4 @@
 import { Quiz } from '@prisma/client'
-
 import { api } from '~/api/server'
 
 export const getQuizQuery = async (id: string) => {

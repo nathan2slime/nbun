@@ -2,6 +2,7 @@
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -33,12 +34,14 @@ import {
 } from '~/components/ui/select'
 import { useMutation } from '@tanstack/react-query'
 import { createQuestionMutation } from '~/api/mutations/quiz/question/create-question.mutation'
+import toast from 'react-hot-toast'
 
 type props = {
   questionId: string
+  onCreated: () => void
 }
 
-export const DialogCreateQuestion = ({ questionId }: props) => {
+export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
   const form = useForm<QuestionQuizFormData>({
     resolver: zodResolver(questionSchema),
     mode: 'onBlur'
@@ -73,7 +76,12 @@ export const DialogCreateQuestion = ({ questionId }: props) => {
       quizId: questionId
     }
 
-    mutation.mutate(payload)
+    mutation.mutate(payload, {
+      onSuccess(data) {
+        toast.success('Questão criada!')
+        onCreated()
+      }
+    })
   }
 
   return (
@@ -136,11 +144,13 @@ export const DialogCreateQuestion = ({ questionId }: props) => {
                 </FormItem>
               )}
             />
+            <DialogFooter className="flex justify-end">
+              <DialogClose asChild>
+                <Button type="submit">Criar Questão</Button>
+              </DialogClose>
+            </DialogFooter>
           </form>
         </Form>
-        <DialogFooter className="flex justify-end">
-          <Button type="submit">Criar Questão</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
