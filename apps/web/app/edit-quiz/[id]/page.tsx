@@ -13,7 +13,6 @@ const Page: NextPage<Props> = async ({ params }) => {
   const id = (await params).id
 
   const quiz = await getQuizQuery(id)
-  console.log(quiz)
 
   if (quiz) {
     return (

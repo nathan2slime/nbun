@@ -9,8 +9,72 @@ import {
 } from '~/components/ui/dialog'
 import { SquarePlus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { questionSchema } from '~/lib/schemas/quiz.schemas'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '~/components/ui/form'
+import { QuestionQuizFormData, QuestionQuizPayload } from '~/types/quiz.types'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '~/components/ui/select'
+import { useMutation } from '@tanstack/react-query'
+import { createQuestionMutation } from '~/api/mutations/quiz/question/create-question.mutation'
 
-export const DialogCreateQuestion = () => {
+type props = {
+  questionId: string
+}
+
+export const DialogCreateQuestion = ({ questionId }: props) => {
+  const form = useForm<QuestionQuizFormData>({
+    resolver: zodResolver(questionSchema),
+    mode: 'onBlur'
+  })
+
+  const difficulties = [
+    {
+      name: 'Fácil',
+      value: 'EASY'
+    },
+    {
+      name: 'Médio',
+      value: 'MEDIUM'
+    },
+    {
+      name: 'Difícil',
+      value: 'HARD'
+    }
+  ]
+
+  const mutation = useMutation({
+    mutationKey: ['create-question'],
+    mutationFn: createQuestionMutation
+  })
+
+  const { handleSubmit, control, formState } = form
+
+  const onSubmit = (values: QuestionQuizFormData) => {
+    const payload: QuestionQuizPayload = {
+      difficulty: values.difficulty,
+      title: values.title,
+      quizId: questionId
+    }
+
+    mutation.mutate(payload)
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -23,6 +87,58 @@ export const DialogCreateQuestion = () => {
         <DialogHeader>
           <DialogTitle>Crie uma questão</DialogTitle>
         </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+            <FormField
+              control={control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Titulo</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormDescription>Pergunta da questão.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="difficulty"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dificuldade</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a verified email to display" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {difficulties.map(difficulty => (
+                        <SelectItem value={difficulty.value}>
+                          {difficulty.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>Dificuldade da questão</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex w-full justify-end">
+              <Button type="submit">Criar Questão</Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )
