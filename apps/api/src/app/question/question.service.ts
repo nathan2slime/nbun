@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import {
   CreateQuestionDto,
+  QueryQuestionDto,
   UpdateQuestionDto
 } from '~/app/question/question.dto'
 import { PrismaService } from '~/database/prisma.service'
@@ -22,5 +23,9 @@ export class QuestionService {
 
   async update(id: string, data: UpdateQuestionDto) {
     return this.prisma.question.update({ where: { id }, data })
+  }
+
+  async paginate(data: QueryQuestionDto) {
+    return this.prisma.question.findMany({ where: { quizId: data.quizId } })
   }
 }

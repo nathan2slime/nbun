@@ -14,7 +14,7 @@ export class SessionService {
   ) {}
 
   async create(userId: string) {
-    await this.deleteAllByUserId(userId)
+    // await this.deleteAllByUserId(userId)
 
     const session = await this.prisma.session.create({
       data: {

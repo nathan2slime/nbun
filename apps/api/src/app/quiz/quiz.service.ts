@@ -28,9 +28,8 @@ export class QuizService {
   }
 
   async delete(id: string) {
-    return this.prisma.quiz.update({
-      where: { id },
-      data: { deletedAt: new Date() }
+    return this.prisma.quiz.delete({
+      where: { id }
     })
   }
 

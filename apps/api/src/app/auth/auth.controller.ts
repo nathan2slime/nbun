@@ -24,7 +24,7 @@ import { env } from '~/env'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @ApiResponse({
     status: 200
   })
@@ -71,6 +71,7 @@ export class AuthController {
     const data = await this.authService.signIn(body)
 
     const { accessToken, refreshToken } = data
+
     res.cookie(
       env.AUTH_COOKIE,
       { accessToken, refreshToken },
