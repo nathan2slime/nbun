@@ -14,3 +14,7 @@ build
 .env.local
 .env.production
 .env
+
+# idea
+.vscode
+.idea
