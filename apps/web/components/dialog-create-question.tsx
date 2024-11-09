@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
@@ -117,28 +118,29 @@ export const DialogCreateQuestion = ({ questionId }: props) => {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue placeholder="Selecione uma dificuldade para questão" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {difficulties.map(difficulty => (
-                        <SelectItem value={difficulty.value}>
+                        <SelectItem
+                          key={difficulty.value}
+                          value={difficulty.value}
+                        >
                           {difficulty.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormDescription>Dificuldade da questão</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <div className="flex w-full justify-end">
-              <Button type="submit">Criar Questão</Button>
-            </div>
           </form>
         </Form>
+        <DialogFooter className="flex justify-end">
+          <Button type="submit">Criar Questão</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

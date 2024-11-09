@@ -22,7 +22,7 @@ const baloo = Baloo_2({
 
 const RootLayout = ({ children }: Readonly<AppChildren>) => (
   <html lang="pt">
-    <body className={cn(baloo.className, 'light')}>
+    <body className={cn(baloo.className, 'dark')}>
       <Providers>
         <AuthGuard>{children}</AuthGuard>
       </Providers>
