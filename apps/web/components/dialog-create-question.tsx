@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Dialog,
   DialogContent,
@@ -8,10 +10,10 @@ import {
 import { SquarePlus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 
-const DialogCreateQuestion = () => {
+export const DialogCreateQuestion = () => {
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button className="w-full">
           <SquarePlus />
           Questões
@@ -25,5 +27,3 @@ const DialogCreateQuestion = () => {
     </Dialog>
   )
 }
-
-export default DialogCreateQuestion

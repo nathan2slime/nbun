@@ -2,13 +2,16 @@ export type QuizResponse = {
   id: string
   title: string
   userId: string
-  createdAt: string
-  updatedAt: string
-  startAt: string | null
+  createdAt: Date
+  updatedAt: Date
+  startAt: Date | null
 }
 
-export type QuizPayload = {
+export type UpdateQuizPayload = CreateQuizPayload & {
   id: string
+}
+
+export type CreateQuizPayload = {
   title: string
 }
 

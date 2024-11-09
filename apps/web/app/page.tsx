@@ -1,18 +1,18 @@
 'use client'
 
 import { useSnapshot } from 'valtio'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
 
 import { Avatar, AvatarImage } from '~/components/ui/avatar'
 
 import { authState } from '~/store/auth.state'
 import { Button } from '~/components/ui/button'
-import { useMutation } from '@tanstack/react-query'
 import { createQuizMutation } from '~/api/mutations/quiz/create-quiz.mutation'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
 
 const Home = () => {
-  const { data } = useSnapshot(authState)
+  const { session } = useSnapshot(authState)
 
   const router = useRouter()
 
@@ -23,7 +23,9 @@ const Home = () => {
 
   const createQuiz = () => {
     mutation.mutate(
-      { title: 'Quiz sem título' },
+      {
+        title: 'Quiz sem título'
+      },
       {
         onSuccess(data) {
           toast.success('Quiz criado com sucesso!')
@@ -39,11 +41,11 @@ const Home = () => {
         <div className={'flex items-center gap-2'}>
           <Avatar>
             <AvatarImage
-              src={'/assets/'.concat(data!.user.avatar).concat('.jpg')}
+              src={'/assets/'.concat(session!.user.avatar).concat('.jpg')}
             />
           </Avatar>
 
-          {data!.user.username}
+          {session!.user.username}
         </div>
 
         <Button onClick={createQuiz}>Criar novo Quiz</Button>
