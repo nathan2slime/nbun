@@ -30,7 +30,7 @@ const getWsCookies = (req: Request) => {
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly sessionService: SessionService) {
     super({
-      ignoreExpiration: false,
+      ignoreExpiration: true,
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           const cookies = req.cookies || getWsCookies(req)
@@ -38,7 +38,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           if (cookies) {
             const data = cookies[env.AUTH_COOKIE]
 
-            if (data && data.refreshToken) return data.refreshToken
+            if (data && data.accessToken) return data.accessToken
           }
 
           return null

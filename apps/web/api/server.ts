@@ -10,7 +10,6 @@ api.interceptors.request.use(async req => {
   const cookie = await cookies()
 
   req.headers['Cookie'] = cookie.toString()
-
   req.withCredentials = true
 
   return req
@@ -18,5 +17,7 @@ api.interceptors.request.use(async req => {
 
 api.interceptors.response.use(
   response => response,
-  (_error: AxiosError) => Promise.resolve({ data: null })
+  (_error: AxiosError) => {
+    return Promise.resolve({ data: null })
+  }
 )

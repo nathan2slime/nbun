@@ -11,6 +11,7 @@ import { JwtAuthPayload } from '~/types/auth.types'
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(private readonly sessionService: SessionService) {
     super({
+      ignoreExpiration: false,
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           if (req) {
@@ -22,7 +23,6 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
           return null
         }
       ]),
-      ignoreExpiration: true,
       secretOrKey: env.SESSION_KEY
     })
   }
