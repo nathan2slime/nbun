@@ -1,4 +1,7 @@
-import { CreateQuestionOptionDto } from '~/app/question-option/question-option.dto'
+import {
+  CreateQuestionOptionDto,
+  QueryQuestionOptionDto
+} from '~/app/question-option/question-option.dto'
 import { PrismaService } from '~/database/prisma.service'
 
 export class QuestionOptionService {
@@ -15,6 +18,10 @@ export class QuestionOptionService {
         }
       }
     })
+  }
+
+  async paginate(data: QueryQuestionOptionDto) {
+    return this.prisma.questionOption.findMany({ where: data })
   }
 
   async getQuantityByQuestionId(questionId: string) {

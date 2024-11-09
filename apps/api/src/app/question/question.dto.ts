@@ -25,3 +25,10 @@ export class UpdateQuestionDto {
   @IsString()
   title: string
 }
+
+export class QueryQuestionDto {
+  @ApiProperty()
+  @IsString()
+  @IsUUID()
+  quizId: string
+}

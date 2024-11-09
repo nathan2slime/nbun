@@ -6,7 +6,7 @@ import {
   Injectable,
   NestInterceptor
 } from '@nestjs/common'
-import { tap } from 'rxjs'
+import { mergeMap } from 'rxjs'
 
 import { QuizService } from '~/app/quiz/quiz.service'
 import { FORBIDDEN_QUIZ_MESSAGE } from '~/errors'
@@ -17,7 +17,7 @@ export class QuizInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
-      tap(async () => {
+      mergeMap(async () => {
         const request = context.switchToHttp().getRequest()
         const session = request.user
 
