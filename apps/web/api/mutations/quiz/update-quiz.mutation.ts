@@ -7,5 +7,8 @@ export const updateQuizMutation = async (payload: QuizPayload) => {
   const { data } = await api.put<QuizResponse>(`/quiz/update/${payload.id}`, {
     title: payload.title
   })
+
+  console.log({ data: data })
+
   return data
 }

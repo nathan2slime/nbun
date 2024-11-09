@@ -48,6 +48,7 @@ const EditQuiz = () => {
     <div className={'h-screen w-screen p-2'}>
       <div className={'flex flex-col gap-2'}>
         <Input
+          className={'text-xl'}
           onBlur={updateQuiz}
           value={quiz?.title}
           onChange={e => setQuiz({ ...quiz, title: e.target.value })}
