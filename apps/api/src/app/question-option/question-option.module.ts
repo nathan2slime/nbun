@@ -7,6 +7,6 @@ import { PrismaService } from '~/database/prisma.service'
 @Module({
   controllers: [QuestionOptionController],
   providers: [PrismaService, QuestionOptionService],
-  exports: []
+  exports: [QuestionOptionService]
 })
 export class QuestionOptionModule {}

@@ -1,8 +1,20 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
+import { QuestionOptionService } from '~/app/question-option/question-option.service'
 import {
   CreateQuestionDto,
+  QueryQuestionDto,
   UpdateQuestionDto
 } from '~/app/question/question.dto'
 import { QuestionService } from '~/app/question/question.service'
@@ -21,5 +33,15 @@ export class QuestionController {
   @Put('update/:id')
   async update(@Body() data: UpdateQuestionDto, @Param('id') id: string) {
     return this.questionService.update(id, data)
+  }
+
+  @Get('paginate')
+  async paginate(@Query() data: QueryQuestionDto) {
+    return this.questionService.paginate(data)
+  }
+
+  @Delete('delete/:id')
+  async delete(@Param('id') questionId: string) {
+    return this.questionService.delete(questionId)
   }
 }
