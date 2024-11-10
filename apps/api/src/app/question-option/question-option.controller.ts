@@ -1,15 +1,22 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
+  Put,
   UseGuards
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
-import { CreateQuestionOptionDto } from '~/app/question-option/question-option.dto'
+import {
+  CreateQuestionOptionDto,
+  UpdateQuestionOptionDto
+} from '~/app/question-option/question-option.dto'
 import { QuestionOptionService } from '~/app/question-option/question-option.service'
 import { MAX_QUESTION_OPTIONS_REACHED_MESSAGE } from '~/errors'
 
@@ -33,5 +40,25 @@ export class QuestionOptionController {
       )
 
     return this.questionOptionService.create(body)
+  }
+
+  @Put('update/:id')
+  async update(@Param('id') id: string, @Body() data: UpdateQuestionOptionDto) {
+    return this.questionOptionService.update(data, id)
+  }
+
+  @Get('paginate/:questionId')
+  async paginate(@Param('questionId') questionId: string) {
+    return this.questionOptionService.paginate({ questionId })
+  }
+
+  @Get('show/:id')
+  async show(@Param('id') id: string) {
+    return this.questionOptionService.show(id)
+  }
+
+  @Delete('delete/:id')
+  async delete(@Param('id') id: string) {
+    return this.questionOptionService.delete(id)
   }
 }

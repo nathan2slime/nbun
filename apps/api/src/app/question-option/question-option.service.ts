@@ -1,9 +1,13 @@
+import { Injectable } from '@nestjs/common'
+
 import {
   CreateQuestionOptionDto,
-  QueryQuestionOptionDto
+  QueryQuestionOptionDto,
+  UpdateQuestionOptionDto
 } from '~/app/question-option/question-option.dto'
 import { PrismaService } from '~/database/prisma.service'
 
+@Injectable()
 export class QuestionOptionService {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -30,5 +34,17 @@ export class QuestionOptionService {
         questionId
       }
     })
+  }
+
+  async update(data: UpdateQuestionOptionDto, id: string) {
+    return this.prisma.questionOption.update({ where: { id }, data })
+  }
+
+  async delete(id: string) {
+    return this.prisma.questionOption.delete({ where: { id } })
+  }
+
+  async show(id: string) {
+    return this.prisma.questionOption.findMany({ where: { id } })
   }
 }
