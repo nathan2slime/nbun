@@ -1,8 +1,12 @@
+-- CreateEnum
+CREATE TYPE "Difficulty" AS ENUM ('EASY', 'MEDIUM', 'HARD');
+
 -- CreateTable
 CREATE TABLE "Quiz" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "startAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -15,6 +19,7 @@ CREATE TABLE "Question" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "quizId" TEXT NOT NULL,
+    "difficulty" "Difficulty" NOT NULL DEFAULT 'MEDIUM',
 
     CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
 );
