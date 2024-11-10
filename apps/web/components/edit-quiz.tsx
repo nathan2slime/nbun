@@ -8,11 +8,7 @@ import { getQuestionQuery } from '~/api/queries/get-questions.query'
 import { DialogCreateQuestion } from '~/components/dialog-create-question'
 import { Question } from '~/components/quiz-questions'
 import { Input } from '~/components/ui/input'
-import {
-  QuestionQuizResponse,
-  QuizResponse,
-  UpdateQuizPayload
-} from '~/types/quiz.types'
+import { QuizResponse, UpdateQuizPayload } from '~/types/quiz.types'
 
 type Props = {
   data: QuizResponse

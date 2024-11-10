@@ -1,6 +1,6 @@
 {
   "workbench.colorTheme": "Catppuccin Macchiato",
-  "workbench.iconTheme": "catppuccin-latte",
+  "workbench.iconTheme": "vscode-icons-mac",
   "editor.wordWrap": "on",
   "typescript.preferences.importModuleSpecifier": "non-relative"
 }

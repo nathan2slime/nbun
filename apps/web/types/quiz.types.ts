@@ -17,7 +17,7 @@ export type CreateQuizPayload = {
 
 export type QuestionQuizFormData = {
   title: string
-  difficulty: 'MEDIUM' | 'HARD' | 'EASY'
+  difficulty: Difficulty
 }
 
 export type QuestionQuizPayload = QuestionQuizFormData & {
@@ -28,5 +28,14 @@ export type QuestionQuizResponse = {
   id: string
   title: string
   quizId: string
-  difficulty: 'MEDIUM' | 'HARD' | 'EASY'
+  difficulty: Difficulty
 }
+
+export type Difficulty = 'MEDIUM' | 'HARD' | 'EASY'
+
+export type CreateOptionPayload = {
+  title: string
+  questionId: string
+}
+
+export type CreateOptionResponse = CreateOptionPayload & {}

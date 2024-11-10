@@ -2,7 +2,6 @@
 
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -35,6 +34,8 @@ import {
 import { useMutation } from '@tanstack/react-query'
 import { createQuestionMutation } from '~/api/mutations/quiz/question/create-question.mutation'
 import toast from 'react-hot-toast'
+import { useState } from 'react'
+import { DIFFICULTIES } from '~/constants'
 
 type props = {
   questionId: string
@@ -42,25 +43,12 @@ type props = {
 }
 
 export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
+  const [isOpenDialog, setIsOpenDialog] = useState(false)
+
   const form = useForm<QuestionQuizFormData>({
     resolver: zodResolver(questionSchema),
     mode: 'onBlur'
   })
-
-  const difficulties = [
-    {
-      name: 'Fácil',
-      value: 'EASY'
-    },
-    {
-      name: 'Médio',
-      value: 'MEDIUM'
-    },
-    {
-      name: 'Difícil',
-      value: 'HARD'
-    }
-  ]
 
   const mutation = useMutation({
     mutationKey: ['create-question'],
@@ -80,12 +68,13 @@ export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
       onSuccess(data) {
         toast.success('Questão criada!')
         onCreated()
+        setIsOpenDialog(false)
       }
     })
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
       <DialogTrigger asChild>
         <Button className="w-full">
           <SquarePlus />
@@ -130,7 +119,7 @@ export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {difficulties.map(difficulty => (
+                      {DIFFICULTIES.map(difficulty => (
                         <SelectItem
                           key={difficulty.value}
                           value={difficulty.value}
@@ -145,9 +134,7 @@ export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
               )}
             />
             <DialogFooter className="flex justify-end">
-              <DialogClose asChild>
-                <Button type="submit">Criar Questão</Button>
-              </DialogClose>
+              <Button type="submit">Criar Questão</Button>
             </DialogFooter>
           </form>
         </Form>

@@ -1,9 +1,5 @@
 import { api } from '~/api/client'
-import {
-  QuestionQuizFormData,
-  QuestionQuizPayload,
-  QuestionQuizResponse
-} from '~/types/quiz.types'
+import { QuestionQuizFormData, QuestionQuizResponse } from '~/types/quiz.types'
 
 export type UpdateQuestion = QuestionQuizFormData & {
   id: string
