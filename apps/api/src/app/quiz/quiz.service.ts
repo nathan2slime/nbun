@@ -27,6 +27,25 @@ export class QuizService {
     })
   }
 
+  async getByUser(userId: string) {
+    return this.prisma.quiz.findMany({
+      where: {
+        OR: [
+          {
+            userId
+          },
+          {
+            responses: {
+              some: {
+                userId
+              }
+            }
+          }
+        ]
+      }
+    })
+  }
+
   async delete(id: string) {
     return this.prisma.quiz.delete({
       where: { id }

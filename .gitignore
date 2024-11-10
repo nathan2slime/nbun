@@ -15,5 +15,6 @@ build
 .env.production
 .env
 
-.idea
+# idea
 .vscode
+.idea
