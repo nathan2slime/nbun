@@ -16,6 +16,7 @@ import { QuizMemberService } from '~/app/quiz-member/quiz-member.service'
 import { QuizIdDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
 import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
 import { GetWebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
+import { QuestionService } from '~/app/question/question.service'
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
 import { QuizService } from '~/app/quiz/quiz.service'
 
@@ -33,6 +34,7 @@ export class QuizGateway implements OnGatewayDisconnect {
   constructor(
     private readonly quizMemberService: QuizMemberService,
     private readonly quizService: QuizService,
+    private readonly questionService: QuestionService,
     private readonly webSocketSessionService: WebSocketSessionService
   ) {}
 
@@ -88,6 +90,7 @@ export class QuizGateway implements OnGatewayDisconnect {
   @SubscribeMessage('start')
   async start(@MessageBody() data: QuizIdDto) {
     await this.quizService.start(data.quizId)
+    const gameRule = await this.questionService.getGameRule(data.quizId)
 
     this.server.emit('start:' + data.quizId)
   }

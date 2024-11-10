@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
 
 export class CreateQuestionOptionDto {
   @IsNotEmpty()
@@ -10,6 +10,12 @@ export class CreateQuestionOptionDto {
   @IsUUID()
   @ApiProperty()
   questionId: string
+}
+
+export class UpdateQuestionOptionDto {
+  @IsOptional()
+  @ApiProperty()
+  title: string
 }
 
 export class QueryQuestionOptionDto {
