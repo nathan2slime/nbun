@@ -28,7 +28,7 @@ export const DeleteQuestion = ({ questionId, onUpdate, quizId }: Props) => {
   }
 
   return (
-    <Button onClick={deleteQuestion} className="bg-destructive">
+    <Button onClick={deleteQuestion} variant="destructive">
       <Trash />
     </Button>
   )

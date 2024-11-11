@@ -16,7 +16,7 @@ const Page: NextPage<Props> = async ({ params }) => {
 
   if (quiz) {
     return (
-      <div className="h-screen w-screen p-2">
+      <div className="min-h-screen w-full p-2 md:p-5">
         <EditQuiz data={quiz} />
       </div>
     )

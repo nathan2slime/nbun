@@ -43,7 +43,7 @@ type props = {
   onCreated: () => void
 }
 
-export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
+export const CreateQuestion = ({ questionId, onCreated }: props) => {
   const [isOpenDialog, setIsOpenDialog] = useState(false)
 
   const form = useForm<QuestionQuizFormData>({
