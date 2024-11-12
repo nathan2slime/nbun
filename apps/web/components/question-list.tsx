@@ -21,7 +21,7 @@ type Props = {
   onUpdate: () => void
 }
 
-export const Question = ({ data, onUpdate }: Props) => {
+export const QuestionList = ({ data, onUpdate }: Props) => {
   const mutation = useMutation({
     mutationKey: ['put-question'],
     mutationFn: updateQuestionMutate
@@ -56,7 +56,11 @@ export const Question = ({ data, onUpdate }: Props) => {
           onChange={e => setQuestion({ ...question, title: e.target.value })}
         />
 
-        <DeleteQuestion optionId={question.id} onUpdate={onUpdate} />
+        <DeleteQuestion
+          quizId={question.quizId}
+          questionId={question.id}
+          onUpdate={onUpdate}
+        />
       </div>
 
       <div className="flex w-full gap-2">

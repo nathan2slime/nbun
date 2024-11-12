@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { SquarePlus } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { createOptionMutation } from '~/api/mutations/quiz/question/option/create-option.mutation'
 import { Button } from '~/components/ui/button'
 
@@ -15,12 +16,14 @@ export const CreateOption = ({ questionId }: Props) => {
 
   const createOption = () => {
     const payload = {
-      title: 'Questão sem titulo',
-      questionId: questionId
+      title: 'Nova opção',
+      questionId
     }
 
     mutation.mutate(payload, {
-      onSuccess(data) {}
+      onSuccess(data) {
+        toast.success('Nova opção criada!')
+      }
     })
   }
 

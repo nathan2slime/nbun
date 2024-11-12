@@ -11,6 +11,7 @@ import { PrismaService } from '~/database/prisma.service'
 @Module({
   imports: [QuizMemberModule, QuestionModule, WebSocketSessionModule],
   controllers: [QuizController],
-  providers: [QuizService, PrismaService, QuizGateway]
+  providers: [QuizService, PrismaService, QuizGateway],
+  exports: [QuizService]
 })
 export class QuizModule {}

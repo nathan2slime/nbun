@@ -1,7 +1,16 @@
 import { api } from '~/api/client'
 
-export const deleteQuestionMutation = async (id: string) => {
-  const { data } = await api.delete('/question/delete/' + id)
+type Args = {
+  questionId: string
+  quizId: string
+}
+
+export const deleteQuestionMutation = async ({ quizId, questionId }: Args) => {
+  const { data } = await api.delete('/question/delete/' + questionId, {
+    headers: {
+      quiz: quizId
+    }
+  })
 
   return data
 }

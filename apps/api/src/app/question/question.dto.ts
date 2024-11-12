@@ -10,10 +10,6 @@ export class CreateQuestionDto {
   @ApiProperty({ enum: Difficulty })
   @IsEnum(Difficulty)
   difficulty: Difficulty
-
-  @ApiProperty()
-  @IsUUID()
-  quizId: string
 }
 
 export class UpdateQuestionDto {

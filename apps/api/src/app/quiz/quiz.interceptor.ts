@@ -6,7 +6,8 @@ import {
   Injectable,
   NestInterceptor
 } from '@nestjs/common'
-import { mergeMap } from 'rxjs'
+import { from, throwError } from 'rxjs'
+import { switchMap, catchError } from 'rxjs/operators'
 
 import { QuizService } from '~/app/quiz/quiz.service'
 import { FORBIDDEN_QUIZ_MESSAGE } from '~/errors'
@@ -16,19 +17,23 @@ export class QuizInterceptor implements NestInterceptor {
   constructor(private readonly quizService: QuizService) {}
 
   intercept(context: ExecutionContext, next: CallHandler) {
-    return next.handle().pipe(
-      mergeMap(async () => {
-        const request = context.switchToHttp().getRequest()
-        const session = request.user
+    const request = context.switchToHttp().getRequest()
+    const session = request.user
 
-        const quizId = request.params.id || request.headers.quiz
-        const userId = session.userId
+    const quizId = request.params.id || request.headers.quiz
+    const userId = session.userId
 
-        const isOwner = await this.quizService.isOwner(quizId, userId)
+    return from(this.quizService.isOwner(quizId, userId)).pipe(
+      switchMap(isOwner => {
+        if (isOwner) {
+          return next.handle()
+        }
 
-        if (!isOwner)
-          throw new HttpException(FORBIDDEN_QUIZ_MESSAGE, HttpStatus.FORBIDDEN)
-      })
+        return throwError(
+          () => new HttpException(FORBIDDEN_QUIZ_MESSAGE, HttpStatus.FORBIDDEN)
+        )
+      }),
+      catchError(err => throwError(() => err))
     )
   }
 }
