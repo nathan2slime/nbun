@@ -52,7 +52,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest())
     }
-    logger.error(exception.message)
+    logger.error(exception)
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus)
   }

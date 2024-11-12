@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Post,
   Put,
@@ -12,6 +13,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
+import { JwtAuthGuard } from '~/app/auth/auth.guard'
 import {
   CreateQuestionDto,
   QueryQuestionDto,
@@ -19,15 +21,16 @@ import {
 } from '~/app/question/question.dto'
 import { QuestionInterceptor } from '~/app/question/question.interceptor'
 import { QuestionService } from '~/app/question/question.service'
+import { QuizInterceptor } from '~/app/quiz/quiz.interceptor'
 
 @ApiTags('Question')
 @Controller('question')
-@UseGuards()
+@UseGuards(JwtAuthGuard)
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Post('create')
-  @UseInterceptors(QuestionInterceptor)
+  @UseInterceptors(QuizInterceptor)
   async create(@Body() data: CreateQuestionDto) {
     return this.questionService.create(data)
   }

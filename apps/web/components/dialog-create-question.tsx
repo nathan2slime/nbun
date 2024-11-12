@@ -1,5 +1,12 @@
 'use client'
 
+import toast from 'react-hot-toast'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { SquarePlus } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+
 import {
   Dialog,
   DialogContent,
@@ -8,11 +15,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from '~/components/ui/dialog'
-import { SquarePlus } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { questionSchema } from '~/lib/schemas/quiz.schemas'
 import {
   Form,
@@ -31,10 +35,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '~/components/ui/select'
-import { useMutation } from '@tanstack/react-query'
 import { createQuestionMutation } from '~/api/mutations/quiz/question/create-question.mutation'
-import toast from 'react-hot-toast'
-import { useState } from 'react'
 import { DIFFICULTIES } from '~/constants'
 
 type props = {
@@ -55,7 +56,7 @@ export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
     mutationFn: createQuestionMutation
   })
 
-  const { handleSubmit, control, formState } = form
+  const { handleSubmit, control } = form
 
   const onSubmit = (values: QuestionQuizFormData) => {
     const payload: QuestionQuizPayload = {
@@ -65,9 +66,11 @@ export const DialogCreateQuestion = ({ questionId, onCreated }: props) => {
     }
 
     mutation.mutate(payload, {
-      onSuccess(data) {
+      onSuccess() {
         toast.success('Questão criada!')
+
         onCreated()
+
         setIsOpenDialog(false)
       }
     })

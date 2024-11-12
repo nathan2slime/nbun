@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { updateQuizMutation } from '~/api/mutations/quiz/update-quiz.mutation'
 import { getQuestionQuery } from '~/api/queries/get-questions.query'
 import { DialogCreateQuestion } from '~/components/dialog-create-question'
-import { Question } from '~/components/quiz-questions'
+import { QuestionList } from '~/components/question-list'
 import { Input } from '~/components/ui/input'
 import { QuizResponse, UpdateQuizPayload } from '~/types/quiz.types'
 
@@ -47,9 +47,10 @@ export const EditQuiz = ({ data }: Props) => {
 
       <DialogCreateQuestion onCreated={refetch} questionId={quiz.id} />
 
-      {questions?.map(question => (
-        <Question key={question.id} onUpdate={refetch} data={question} />
-      ))}
+      {questions &&
+        questions.map(question => (
+          <QuestionList key={question.id} onUpdate={refetch} data={question} />
+        ))}
     </div>
   )
 }

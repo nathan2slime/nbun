@@ -36,6 +36,7 @@ export type Difficulty = 'MEDIUM' | 'HARD' | 'EASY'
 export type CreateOptionPayload = {
   title: string
   questionId: string
+  quizId: string
 }
 
 export type CreateOptionResponse = CreateOptionPayload & {}

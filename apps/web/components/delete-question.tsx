@@ -1,25 +1,30 @@
 import { useMutation } from '@tanstack/react-query'
 import { Trash } from 'lucide-react'
+
 import { deleteQuestionMutation } from '~/api/mutations/quiz/question/delete-question.mutation'
 import { Button } from '~/components/ui/button'
 
 type Props = {
-  optionId: string
+  questionId: string
   onUpdate: () => void
+  quizId: string
 }
 
-export const DeleteQuestion = ({ optionId, onUpdate }: Props) => {
+export const DeleteQuestion = ({ questionId, onUpdate, quizId }: Props) => {
   const mutation = useMutation({
     mutationKey: ['delete-option'],
     mutationFn: deleteQuestionMutation
   })
 
   const deleteQuestion = () => {
-    mutation.mutate(optionId, {
-      onSuccess() {
-        onUpdate()
+    mutation.mutate(
+      { questionId, quizId },
+      {
+        onSuccess() {
+          onUpdate()
+        }
       }
-    })
+    )
   }
 
   return (
