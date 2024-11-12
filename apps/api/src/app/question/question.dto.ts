@@ -7,6 +7,11 @@ export class CreateQuestionDto {
   @IsString()
   title: string
 
+  @IsUUID()
+  @ApiProperty()
+  @IsString()
+  quizId: string
+
   @ApiProperty({ enum: Difficulty })
   @IsEnum(Difficulty)
   difficulty: Difficulty
