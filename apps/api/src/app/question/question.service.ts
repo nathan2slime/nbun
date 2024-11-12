@@ -12,6 +12,8 @@ import { PrismaService } from '~/database/prisma.service'
 export class QuestionService {
   constructor(private readonly prisma: PrismaService) {}
 
+  maxOptions = 4
+
   timeRule: Record<Difficulty, number> = {
     EASY: 15,
     MEDIUM: 25,
@@ -22,6 +24,10 @@ export class QuestionService {
     EASY: 1,
     HARD: 2,
     MEDIUM: 3
+  }
+
+  getMaxOptions() {
+    return this.maxOptions
   }
 
   async create({ quizId, ...payload }: CreateQuestionDto) {

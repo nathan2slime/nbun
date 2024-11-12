@@ -69,6 +69,48 @@ export class QuizService {
     return count == 1
   }
 
+  async isQuestionOptionOwner(
+    quizId: string,
+    questionOptionId: string,
+    questionId: string,
+    userId: string
+  ) {
+    const count = await this.prisma.quiz.count({
+      where: {
+        userId,
+        id: quizId,
+        questions: {
+          some: {
+            id: questionId,
+            options: {
+              some: {
+                id: questionOptionId
+              }
+            }
+          }
+        }
+      }
+    })
+
+    return count == 1
+  }
+
+  async isQuestionOwner(quizId: string, questionId: string, userId: string) {
+    const count = await this.prisma.quiz.count({
+      where: {
+        userId,
+        id: quizId,
+        questions: {
+          some: {
+            id: questionId
+          }
+        }
+      }
+    })
+
+    return count == 1
+  }
+
   async start(id: string) {
     return this.prisma.quiz.update({
       where: {
