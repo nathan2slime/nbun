@@ -30,6 +30,7 @@ export class QuizController {
   }
 
   @Get('show/:id')
+  @UseInterceptors(QuizInterceptor)
   async show(@Param('id') id: string) {
     return this.quizService.getById(id)
   }
@@ -40,6 +41,7 @@ export class QuizController {
   }
 
   @Get('start/:id')
+  @UseInterceptors(QuizInterceptor)
   async start(@Param('id') id: string) {
     return this.quizService.start(id)
   }

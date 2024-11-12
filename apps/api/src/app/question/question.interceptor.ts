@@ -12,7 +12,7 @@ import { QuizService } from '~/app/quiz/quiz.service'
 import { FORBIDDEN_QUIZ_MESSAGE } from '~/errors'
 
 @Injectable()
-export class QuizInterceptor implements NestInterceptor {
+export class QuestionInterceptor implements NestInterceptor {
   constructor(private readonly quizService: QuizService) {}
 
   intercept(context: ExecutionContext, next: CallHandler) {
@@ -21,10 +21,15 @@ export class QuizInterceptor implements NestInterceptor {
         const request = context.switchToHttp().getRequest()
         const session = request.user
 
-        const quizId = request.params.id || request.headers.quiz
+        const quizId = request.headers.quiz
+        const questionId = request.params.id || request.headers.question
         const userId = session.userId
 
-        const isOwner = await this.quizService.isOwner(quizId, userId)
+        const isOwner = await this.quizService.isQuestionOwner(
+          quizId,
+          questionId,
+          userId
+        )
 
         if (!isOwner)
           throw new HttpException(FORBIDDEN_QUIZ_MESSAGE, HttpStatus.FORBIDDEN)
