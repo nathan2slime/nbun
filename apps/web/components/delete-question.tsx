@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash } from 'lucide-react'
 import { Dispatch, SetStateAction } from 'react'
 
@@ -7,23 +7,36 @@ import { Button } from '~/components/ui/button'
 import { QuestionQuizResponse } from '~/types/quiz.types'
 
 type Props = {
-  question: QuestionQuizResponse
-  onUpdate: () => void
+  questionId: string
   quizId: string
 }
 
-export const DeleteQuestion = ({ question, onUpdate, quizId }: Props) => {
+export const DeleteQuestion = ({ questionId, quizId }: Props) => {
   const mutation = useMutation({
     mutationKey: ['delete-option'],
     mutationFn: deleteQuestionMutation
   })
 
+  const queryClient = useQueryClient()
+
+  const onUpdateQuestions = () => {
+    console.log('hello', quizId)
+
+    queryClient.setQueryData(
+      ['get-questions', quizId],
+      (questions: QuestionQuizResponse[]) =>
+        (questions || []).filter(e => e.id != questionId)
+    )
+  }
+
   const deleteQuestion = () => {
+    onUpdateQuestions()
+
     mutation.mutate(
-      { questionId: question.id, quizId },
+      { questionId, quizId },
       {
         onSuccess() {
-          onUpdate()
+          onUpdateQuestions()
         }
       }
     )

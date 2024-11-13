@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query'
 import { NextPage } from 'next'
 
 import { getQuizQuery } from '~/api/queries/get-quiz.query'
@@ -10,14 +11,18 @@ type Props = {
 }
 
 const Page: NextPage<Props> = async ({ params }) => {
-  const id = (await params).id
+  const quizId = (await params).id
+  const clientQuery = new QueryClient()
 
-  const quiz = await getQuizQuery(id)
+  const quiz = await clientQuery.fetchQuery({
+    queryKey: ['get-quiz', quizId],
+    queryFn: ({ queryKey: [_, quizId] }) => getQuizQuery(quizId!)
+  })
 
   if (quiz) {
     return (
       <div className="min-h-screen w-full p-2 md:p-5">
-        <EditQuiz data={quiz} />
+        <EditQuiz quiz={quiz} />
       </div>
     )
   }

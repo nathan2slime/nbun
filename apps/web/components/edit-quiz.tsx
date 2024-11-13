@@ -1,24 +1,33 @@
 'use client'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { createContext, useState } from 'react'
 
 import { updateQuizMutation } from '~/api/mutations/quiz/update-quiz.mutation'
 import { getQuestionQuery } from '~/api/queries/get-questions.query'
-import { CreateQuestion } from '~/components/dialog-create-question'
-import { Question } from '~/components/question-list'
+import { DialogCreateQuestion } from '~/components/dialog-create-question'
+import { QuestionItem } from '~/components/question-item'
 import { Input } from '~/components/ui/input'
 import { QuizResponse, UpdateQuizPayload } from '~/types/quiz.types'
 
 type Props = {
-  data: QuizResponse
+  quiz: QuizResponse
 }
 
-export const EditQuiz = ({ data }: Props) => {
-  const [quiz, setQuiz] = useState(data)
+type ContextType = {
+  quizId: string | undefined
+}
 
-  const { data: questions, refetch } = useQuery({
-    queryKey: ['get-questions', data.id],
+export const EditQuizContext = createContext<ContextType>({
+  quizId: undefined
+})
+
+export const EditQuiz = (props: Props) => {
+  const [quiz, setQuiz] = useState(props.quiz)
+  const clientQuery = useQueryClient()
+
+  const getQuestionsQuery = useQuery({
+    queryKey: ['get-questions', quiz.id],
     queryFn: ({ queryKey: [_, quizId] }) => getQuestionQuery(quizId!)
   })
 
@@ -36,21 +45,33 @@ export const EditQuiz = ({ data }: Props) => {
     mutation.mutate(payload)
   }
 
+  const questions = getQuestionsQuery.data
+
   return (
-    <div className="flex flex-col gap-2">
-      <Input
-        className="text-xl"
-        onBlur={updateQuiz}
-        value={quiz.title}
-        onChange={e => setQuiz({ ...quiz, title: e.target.value })}
-      />
+    <EditQuizContext.Provider value={{ quizId: quiz.id }}>
+      <div className="flex flex-col gap-2">
+        <Input
+          className="p-3 text-xl font-semibold"
+          onBlur={updateQuiz}
+          value={quiz.title || ''}
+          onChange={e => setQuiz({ ...quiz, title: e.target.value })}
+        />
 
-      <CreateQuestion onCreated={refetch} questionId={quiz.id} />
+        <DialogCreateQuestion
+          onCreated={question =>
+            clientQuery.setQueryData(
+              ['get-questions', quiz.id],
+              [...(questions || []), question]
+            )
+          }
+          questionId={quiz.id}
+        />
 
-      {questions &&
-        questions.map(question => (
-          <Question key={question.id} onUpdate={refetch} data={question} />
-        ))}
-    </div>
+        {questions &&
+          questions.map(question => (
+            <QuestionItem key={question.id} question={question} />
+          ))}
+      </div>
+    </EditQuizContext.Provider>
   )
 }

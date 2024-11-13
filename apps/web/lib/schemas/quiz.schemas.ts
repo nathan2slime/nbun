@@ -1,5 +1,6 @@
 import z from 'zod'
 import { REQUIRED_ERROR } from '~/constants'
+import { Difficulty } from '~/types/quiz.types'
 
 export const questionSchema = z.object({
   title: z
@@ -9,7 +10,8 @@ export const questionSchema = z.object({
     .min(3, {
       message: 'O titulo deve conter no mínimo 3 letras.'
     }),
-  difficulty: z.enum(['EASY', 'MEDIUM', 'HARD'], {
+  difficulty: z.nativeEnum(Difficulty, {
     required_error: REQUIRED_ERROR
   })
 })
+export type QuestionQuizFormData = z.infer<typeof questionSchema>
