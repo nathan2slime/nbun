@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
+import { useForm } from 'react-hook-form'
+
 import {
   UpdateQuestion,
   updateQuestionMutate
@@ -19,7 +21,6 @@ import {
 } from '~/components/ui/select'
 import { DIFFICULTIES } from '~/constants'
 import { EditQuizContext } from '~/components/edit-quiz'
-import { useForm } from 'react-hook-form'
 
 type Props = {
   question: QuestionQuizResponse
