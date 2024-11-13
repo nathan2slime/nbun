@@ -1,11 +1,11 @@
 import { api } from '~/api/client'
-import { CreateOptionPayload, CreateOptionResponse } from '~/types/quiz.types'
+import { CreateOptionPayload, OptionResponse } from '~/types/quiz.types'
 
 export const createOptionMutation = async ({
   quizId,
   ...payload
 }: CreateOptionPayload) => {
-  const { data } = await api.post<CreateOptionResponse>(
+  const { data } = await api.post<OptionResponse>(
     '/question/option/create',
     payload,
     {

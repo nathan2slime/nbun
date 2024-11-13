@@ -8,7 +8,8 @@ type Args = {
 export const deleteQuestionMutation = async ({ quizId, questionId }: Args) => {
   const { data } = await api.delete('/question/delete/' + questionId, {
     headers: {
-      quiz: quizId
+      quiz: quizId,
+      question: questionId
     }
   })
 

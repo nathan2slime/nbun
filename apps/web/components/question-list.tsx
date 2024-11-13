@@ -1,5 +1,5 @@
-import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { updateQuestionMutate } from '~/api/mutations/quiz/question/update-question.mutation'
 import { Input } from '~/components/ui/input'
 import { Difficulty, QuestionQuizResponse } from '~/types/quiz.types'
@@ -15,25 +15,35 @@ import {
   SelectValue
 } from '~/components/ui/select'
 import { DIFFICULTIES } from '~/constants'
+import { Option } from '~/components/question-option'
+import { getOptionsQuery } from '~/api/queries/get-options.query'
+import { useParams } from 'next/navigation'
 
 type Props = {
   data: QuestionQuizResponse
   onUpdate: () => void
 }
 
-export const QuestionList = ({ data, onUpdate }: Props) => {
+export const Question = ({ data, onUpdate }: Props) => {
+  const [question, setQuestion] = useState<QuestionQuizResponse>(data)
+
+  const quizId = useParams().id as string
+
+  const { data: options, refetch } = useQuery({
+    queryKey: ['get-options', data.id],
+    queryFn: ({ queryKey: [_, questionId] }) =>
+      getOptionsQuery({
+        questionId: questionId!,
+        quizId: quizId
+      })
+  })
+
   const mutation = useMutation({
     mutationKey: ['put-question'],
     mutationFn: updateQuestionMutate
   })
 
-  const [question, setQuestion] = useState<QuestionQuizResponse>(data)
-
   const putQuestion = () => {
-    if (question === data) {
-      return
-    }
-
     const payload = {
       id: question.id,
       title: question.title,
@@ -41,11 +51,15 @@ export const QuestionList = ({ data, onUpdate }: Props) => {
     }
 
     mutation.mutate(payload, {
-      onSuccess(data) {
+      onSuccess() {
         onUpdate()
       }
     })
   }
+
+  useEffect(() => {
+    putQuestion()
+  }, [question.difficulty])
 
   return (
     <div className="bg-card flex flex-col gap-2 rounded-md border p-2">
@@ -57,14 +71,18 @@ export const QuestionList = ({ data, onUpdate }: Props) => {
         />
 
         <DeleteQuestion
-          quizId={question.quizId}
-          questionId={question.id}
+          question={question}
+          quizId={quizId}
           onUpdate={onUpdate}
         />
       </div>
 
       <div className="flex w-full gap-2">
-        <CreateOption questionId={question.id} />
+        <CreateOption
+          quizId={quizId}
+          onUpdate={refetch}
+          questionId={question.id}
+        />
 
         <Select
           value={question.difficulty}
@@ -72,10 +90,7 @@ export const QuestionList = ({ data, onUpdate }: Props) => {
             setQuestion({ ...question, difficulty: value as Difficulty })
           }
         >
-          <SelectTrigger
-            onChange={putQuestion}
-            className="bg-background w-full"
-          >
+          <SelectTrigger className="bg-background w-full">
             <SelectValue placeholder="Dificuldade" />
           </SelectTrigger>
           <SelectContent>
@@ -90,6 +105,20 @@ export const QuestionList = ({ data, onUpdate }: Props) => {
           </SelectContent>
         </Select>
       </div>
+
+      <p className="text-xs">Opções:</p>
+
+      {options &&
+        options.map(option => (
+          <Option
+            quizId={quizId}
+            questionId={question.id}
+            onUpdate={refetch}
+            data={option}
+          />
+        ))}
+
+      {options?.length === 0 && <p>Nenhuma opção criada</p>}
     </div>
   )
 }

@@ -39,4 +39,11 @@ export type CreateOptionPayload = {
   quizId: string
 }
 
-export type CreateOptionResponse = CreateOptionPayload & {}
+export type OptionResponse = CreateOptionPayload & {
+  id: string
+}
+
+export type UpdateOptionPayload = {
+  title: string
+  id: string
+}
