@@ -6,9 +6,11 @@ import { Button } from '~/components/ui/button'
 
 type Props = {
   questionId: string
+  onUpdate: () => void
+  quizId: string
 }
 
-export const CreateOption = ({ questionId }: Props) => {
+export const CreateOption = ({ questionId, quizId, onUpdate }: Props) => {
   const mutation = useMutation({
     mutationKey: ['create-option'],
     mutationFn: createOptionMutation
@@ -17,11 +19,13 @@ export const CreateOption = ({ questionId }: Props) => {
   const createOption = () => {
     const payload = {
       title: 'Nova opção',
-      questionId
+      questionId: questionId,
+      quizId: quizId
     }
 
     mutation.mutate(payload, {
-      onSuccess(data) {
+      onSuccess() {
+        onUpdate()
         toast.success('Nova opção criada!')
       }
     })

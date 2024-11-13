@@ -27,11 +27,8 @@ export class QuestionInterceptor implements NestInterceptor {
       this.quizService.isQuestionOwner(quizId, questionId, userId)
     ).pipe(
       switchMap(isOwner => {
-        console.log(isOwner, userId, questionId)
+        if (isOwner) return next.handle()
 
-        if (isOwner) {
-          return next.handle()
-        }
         return throwError(
           () => new HttpException(FORBIDDEN_QUIZ_MESSAGE, HttpStatus.FORBIDDEN)
         )

@@ -8,9 +8,11 @@ import { DeleteOption } from '~/components/delete-question-option'
 type Props = {
   data: OptionResponse
   onUpdate: () => void
+  quizId: string
+  questionId: string
 }
 
-export const Option = ({ data, onUpdate }: Props) => {
+export const Option = ({ data, onUpdate, questionId, quizId }: Props) => {
   const [option, setOption] = useState(data)
 
   const mutation = useMutation({
@@ -24,11 +26,14 @@ export const Option = ({ data, onUpdate }: Props) => {
       id: option.id
     }
 
-    mutation.mutate(payload, {
-      onSuccess() {
-        onUpdate()
+    mutation.mutate(
+      { payload: payload, question: questionId, quiz: quizId },
+      {
+        onSuccess(data) {
+          onUpdate()
+        }
       }
-    })
+    )
   }
 
   return (
@@ -38,7 +43,12 @@ export const Option = ({ data, onUpdate }: Props) => {
         value={option.title}
         onChange={e => setOption({ ...option, title: e.target.value })}
       />
-      <DeleteOption onUpdate={onUpdate} optionId={option.id} />
+      <DeleteOption
+        onUpdate={() => onUpdate()}
+        quizId={quizId}
+        optionId={option.id}
+        questionId={questionId}
+      />
     </div>
   )
 }

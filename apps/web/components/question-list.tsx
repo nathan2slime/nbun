@@ -17,6 +17,7 @@ import {
 import { DIFFICULTIES } from '~/constants'
 import { Option } from '~/components/question-option'
 import { getOptionsQuery } from '~/api/queries/get-options.query'
+import { useParams } from 'next/navigation'
 
 type Props = {
   data: QuestionQuizResponse
@@ -26,9 +27,15 @@ type Props = {
 export const Question = ({ data, onUpdate }: Props) => {
   const [question, setQuestion] = useState<QuestionQuizResponse>(data)
 
+  const quizId = useParams().id as string
+
   const { data: options, refetch } = useQuery({
     queryKey: ['get-options', data.id],
-    queryFn: ({ queryKey: [_, questionId] }) => getOptionsQuery(questionId!)
+    queryFn: ({ queryKey: [_, questionId] }) =>
+      getOptionsQuery({
+        questionId: questionId!,
+        quizId: quizId
+      })
   })
 
   const mutation = useMutation({
@@ -63,11 +70,19 @@ export const Question = ({ data, onUpdate }: Props) => {
           onChange={e => setQuestion({ ...question, title: e.target.value })}
         />
 
-        <DeleteQuestion optionId={question.id} onUpdate={onUpdate} />
+        <DeleteQuestion
+          question={question}
+          quizId={quizId}
+          onUpdate={onUpdate}
+        />
       </div>
 
       <div className="flex w-full gap-2">
-        <CreateOption onUpdate={refetch} questionId={question.id} />
+        <CreateOption
+          quizId={quizId}
+          onUpdate={refetch}
+          questionId={question.id}
+        />
 
         <Select
           value={question.difficulty}
@@ -93,7 +108,15 @@ export const Question = ({ data, onUpdate }: Props) => {
 
       <p className="text-xs">Opções:</p>
 
-      {options?.map(option => <Option onUpdate={refetch} data={option} />)}
+      {options &&
+        options.map(option => (
+          <Option
+            quizId={quizId}
+            questionId={question.id}
+            onUpdate={refetch}
+            data={option}
+          />
+        ))}
 
       {options?.length === 0 && <p>Nenhuma opção criada</p>}
     </div>

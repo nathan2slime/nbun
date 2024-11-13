@@ -1,16 +1,18 @@
 import { useMutation } from '@tanstack/react-query'
 import { Trash } from 'lucide-react'
+import { Dispatch, SetStateAction } from 'react'
 
 import { deleteQuestionMutation } from '~/api/mutations/quiz/question/delete-question.mutation'
 import { Button } from '~/components/ui/button'
+import { QuestionQuizResponse } from '~/types/quiz.types'
 
 type Props = {
-  questionId: string
+  question: QuestionQuizResponse
   onUpdate: () => void
   quizId: string
 }
 
-export const DeleteQuestion = ({ questionId, onUpdate, quizId }: Props) => {
+export const DeleteQuestion = ({ question, onUpdate, quizId }: Props) => {
   const mutation = useMutation({
     mutationKey: ['delete-option'],
     mutationFn: deleteQuestionMutation
@@ -18,7 +20,7 @@ export const DeleteQuestion = ({ questionId, onUpdate, quizId }: Props) => {
 
   const deleteQuestion = () => {
     mutation.mutate(
-      { questionId, quizId },
+      { questionId: question.id, quizId },
       {
         onSuccess() {
           onUpdate()

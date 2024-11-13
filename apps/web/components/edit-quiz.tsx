@@ -1,12 +1,12 @@
 'use client'
 
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { updateQuizMutation } from '~/api/mutations/quiz/update-quiz.mutation'
 import { getQuestionQuery } from '~/api/queries/get-questions.query'
-import { DialogCreateQuestion } from '~/components/dialog-create-question'
-import { QuestionList } from '~/components/question-list'
+import { CreateQuestion } from '~/components/dialog-create-question'
+import { Question } from '~/components/question-list'
 import { Input } from '~/components/ui/input'
 import { QuizResponse, UpdateQuizPayload } from '~/types/quiz.types'
 
@@ -45,11 +45,11 @@ export const EditQuiz = ({ data }: Props) => {
         onChange={e => setQuiz({ ...quiz, title: e.target.value })}
       />
 
-      <DialogCreateQuestion onCreated={refetch} questionId={quiz.id} />
+      <CreateQuestion onCreated={refetch} questionId={quiz.id} />
 
       {questions &&
         questions.map(question => (
-          <QuestionList key={question.id} onUpdate={refetch} data={question} />
+          <Question key={question.id} onUpdate={refetch} data={question} />
         ))}
     </div>
   )

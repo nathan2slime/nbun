@@ -34,7 +34,9 @@ export class QuestionOptionInterceptor implements NestInterceptor {
       )
     ).pipe(
       switchMap(isOwner => {
-        if (isOwner) next.handle()
+        console.log(isOwner)
+
+        if (isOwner) return next.handle()
 
         return throwError(
           () => new HttpException(FORBIDDEN_QUIZ_MESSAGE, HttpStatus.FORBIDDEN)
