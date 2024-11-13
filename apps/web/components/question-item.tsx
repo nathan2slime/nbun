@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -21,6 +21,8 @@ import {
 } from '~/components/ui/select'
 import { DIFFICULTIES } from '~/constants'
 import { EditQuizContext } from '~/components/edit-quiz'
+import { getOptionsQuery } from '~/api/queries/get-options.query'
+import { QuestionOption } from '~/components/question-option'
 
 type Props = {
   question: QuestionQuizResponse
@@ -35,6 +37,15 @@ export const QuestionItem = ({ question }: Props) => {
     mutationFn: updateQuestionMutate
   })
 
+  const getOptions = useQuery({
+    queryKey: ['get-options', question.id],
+    queryFn: ({ queryKey: [_, questionId] }) =>
+      getOptionsQuery({
+        questionId: questionId!,
+        quizId
+      })
+  })
+
   const form = useForm({
     mode: 'onBlur',
     defaultValues: {
@@ -45,6 +56,8 @@ export const QuestionItem = ({ question }: Props) => {
   })
 
   const formValues = form.watch()
+
+  const questionOptions = getOptions.data
 
   const onUpdateQuestion = (payload: UpdateQuestion) => {
     queryClient.setQueryData(
@@ -60,8 +73,8 @@ export const QuestionItem = ({ question }: Props) => {
     onUpdateQuestion(payload)
 
     editQuestionMutation.mutate(payload, {
-      onSuccess() {
-        onUpdateQuestion(payload)
+      onSuccess(data) {
+        onUpdateQuestion(data)
       }
     })
   }
@@ -83,7 +96,7 @@ export const QuestionItem = ({ question }: Props) => {
           value={formValues.title}
         />
 
-        <DeleteQuestion quizId={quizId!} questionId={question.id} />
+        <DeleteQuestion questionId={question.id} />
       </div>
 
       <div className="flex w-full gap-2">
@@ -111,6 +124,15 @@ export const QuestionItem = ({ question }: Props) => {
           </SelectContent>
         </Select>
       </div>
+
+      {questionOptions &&
+        questionOptions.map(option => (
+          <QuestionOption
+            key={option.id}
+            questionId={question.id}
+            data={option}
+          />
+        ))}
     </div>
   )
 }

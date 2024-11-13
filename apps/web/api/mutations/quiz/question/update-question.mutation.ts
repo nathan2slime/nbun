@@ -1,5 +1,6 @@
 import { api } from '~/api/client'
-import { QuestionQuizFormData, QuestionQuizResponse } from '~/types/quiz.types'
+import { QuestionQuizFormData } from '~/lib/schemas/quiz.schemas'
+import { QuestionQuizResponse } from '~/types/quiz.types'
 
 export type UpdateQuestion = QuestionQuizFormData & {
   id: string

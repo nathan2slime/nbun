@@ -1,34 +1,56 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { SquarePlus } from 'lucide-react'
 import { useContext } from 'react'
 import toast from 'react-hot-toast'
+
 import { createOptionMutation } from '~/api/mutations/quiz/question/option/create-option.mutation'
 import { EditQuizContext } from '~/components/edit-quiz'
 import { Button } from '~/components/ui/button'
+import { CreateOptionPayload, OptionResponse } from '~/types/quiz.types'
 
 type Props = {
   questionId: string
-  onUpdate: () => void
-  quizId: string
 }
 
 export const CreateOption = ({ questionId }: Props) => {
   const { quizId } = useContext(EditQuizContext)
+
+  const queryClient = useQueryClient()
 
   const mutation = useMutation({
     mutationKey: ['create-option'],
     mutationFn: createOptionMutation
   })
 
+  const updateOptions = (payload: CreateOptionPayload) => {
+    const id = Math.random().toString()
+
+    queryClient.setQueryData(
+      ['get-options', questionId],
+      (prev: OptionResponse[] = []) =>
+        prev.length >= 4 ? prev : [...prev, { id, ...payload }]
+    )
+
+    return id
+  }
+
   const createOption = () => {
     const payload = {
       title: 'Nova opção',
       questionId,
-      quizId: quizId!
+      quizId
     }
 
+    const id = updateOptions(payload)
+
     mutation.mutate(payload, {
-      onSuccess() {
+      onSuccess(data) {
+        queryClient.setQueryData(
+          ['get-options', questionId],
+          (prev: OptionResponse[] = []) =>
+            prev.map(e => (e.id == id ? data : e))
+        )
+
         toast.success('Nova opção criada!')
       }
     })

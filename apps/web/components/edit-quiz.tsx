@@ -5,7 +5,7 @@ import { createContext, useState } from 'react'
 
 import { updateQuizMutation } from '~/api/mutations/quiz/update-quiz.mutation'
 import { getQuestionQuery } from '~/api/queries/get-questions.query'
-import { DialogCreateQuestion } from '~/components/dialog-create-question'
+import { CreateQuestion } from '~/components/create-question'
 import { QuestionItem } from '~/components/question-item'
 import { Input } from '~/components/ui/input'
 import { QuizResponse, UpdateQuizPayload } from '~/types/quiz.types'
@@ -15,11 +15,11 @@ type Props = {
 }
 
 type ContextType = {
-  quizId: string | undefined
+  quizId: string
 }
 
 export const EditQuizContext = createContext<ContextType>({
-  quizId: undefined
+  quizId: ''
 })
 
 export const EditQuiz = (props: Props) => {
@@ -57,7 +57,7 @@ export const EditQuiz = (props: Props) => {
           onChange={e => setQuiz({ ...quiz, title: e.target.value })}
         />
 
-        <DialogCreateQuestion
+        <CreateQuestion
           onCreated={question =>
             clientQuery.setQueryData(
               ['get-questions', quiz.id],
