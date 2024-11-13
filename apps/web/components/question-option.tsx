@@ -1,24 +1,33 @@
-import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useContext, useState } from 'react'
+
 import { updateOptionMutation } from '~/api/mutations/quiz/question/option/update-option.mutation'
 import { Input } from '~/components/ui/input'
-import { OptionResponse } from '~/types/quiz.types'
+import { OptionResponse, UpdateOptionPayload } from '~/types/quiz.types'
 import { DeleteOption } from '~/components/delete-question-option'
+import { EditQuizContext } from '~/components/edit-quiz'
 
 type Props = {
   data: OptionResponse
-  onUpdate: () => void
-  quizId: string
   questionId: string
 }
 
-export const Option = ({ data, onUpdate, questionId, quizId }: Props) => {
+export const QuestionOption = ({ data, questionId }: Props) => {
   const [option, setOption] = useState(data)
+  const { quizId } = useContext(EditQuizContext)
+  const queryClient = useQueryClient()
 
   const mutation = useMutation({
     mutationKey: ['update-option'],
     mutationFn: updateOptionMutation
   })
+
+  const updateEditOptions = (payload: UpdateOptionPayload) =>
+    queryClient.setQueryData(
+      ['get-options', questionId],
+      (prev: OptionResponse[]) =>
+        (prev || []).map(e => (e.id == payload.id ? payload : e))
+    )
 
   const updateOption = () => {
     const payload = {
@@ -26,14 +35,9 @@ export const Option = ({ data, onUpdate, questionId, quizId }: Props) => {
       id: option.id
     }
 
-    mutation.mutate(
-      { payload: payload, question: questionId, quiz: quizId },
-      {
-        onSuccess(data) {
-          onUpdate()
-        }
-      }
-    )
+    updateEditOptions(payload)
+
+    mutation.mutate({ payload: payload, question: questionId, quiz: quizId })
   }
 
   return (
@@ -43,12 +47,7 @@ export const Option = ({ data, onUpdate, questionId, quizId }: Props) => {
         value={option.title}
         onChange={e => setOption({ ...option, title: e.target.value })}
       />
-      <DeleteOption
-        onUpdate={() => onUpdate()}
-        quizId={quizId}
-        optionId={option.id}
-        questionId={questionId}
-      />
+      <DeleteOption optionId={option.id} questionId={questionId} />
     </div>
   )
 }

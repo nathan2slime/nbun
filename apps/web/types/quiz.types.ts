@@ -1,3 +1,5 @@
+import { QuestionQuizFormData } from '~/lib/schemas/quiz.schemas'
+
 export type QuizResponse = {
   id: string
   title: string
@@ -15,11 +17,6 @@ export type CreateQuizPayload = {
   title: string
 }
 
-export type QuestionQuizFormData = {
-  title: string
-  difficulty: Difficulty
-}
-
 export type QuestionQuizPayload = QuestionQuizFormData & {
   quizId: string
 }
@@ -31,7 +28,11 @@ export type QuestionQuizResponse = {
   difficulty: Difficulty
 }
 
-export type Difficulty = 'MEDIUM' | 'HARD' | 'EASY'
+export enum Difficulty {
+  MEDIUM = 'MEDIUM',
+  HARD = 'HARD',
+  EASY = 'EASY'
+}
 
 export type CreateOptionPayload = {
   title: string

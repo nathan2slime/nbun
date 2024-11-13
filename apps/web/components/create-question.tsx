@@ -17,7 +17,10 @@ import {
 } from '~/components/ui/dialog'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
-import { questionSchema } from '~/lib/schemas/quiz.schemas'
+import {
+  QuestionQuizFormData,
+  questionSchema
+} from '~/lib/schemas/quiz.schemas'
 import {
   Form,
   FormControl,
@@ -27,7 +30,11 @@ import {
   FormLabel,
   FormMessage
 } from '~/components/ui/form'
-import { QuestionQuizFormData, QuestionQuizPayload } from '~/types/quiz.types'
+import {
+  Difficulty,
+  QuestionQuizPayload,
+  QuestionQuizResponse
+} from '~/types/quiz.types'
 import {
   Select,
   SelectContent,
@@ -40,7 +47,7 @@ import { DIFFICULTIES } from '~/constants'
 
 type props = {
   questionId: string
-  onCreated: () => void
+  onCreated: (data: QuestionQuizResponse) => unknown
 }
 
 export const CreateQuestion = ({ questionId, onCreated }: props) => {
@@ -48,7 +55,11 @@ export const CreateQuestion = ({ questionId, onCreated }: props) => {
 
   const form = useForm<QuestionQuizFormData>({
     resolver: zodResolver(questionSchema),
-    mode: 'onBlur'
+    mode: 'onBlur',
+    defaultValues: {
+      difficulty: Difficulty.EASY,
+      title: ''
+    }
   })
 
   const mutation = useMutation({
@@ -66,11 +77,10 @@ export const CreateQuestion = ({ questionId, onCreated }: props) => {
     }
 
     mutation.mutate(payload, {
-      onSuccess() {
+      onSuccess(data) {
         toast.success('Questão criada!')
 
-        onCreated()
-
+        onCreated(data)
         setIsOpenDialog(false)
       }
     })
@@ -81,7 +91,7 @@ export const CreateQuestion = ({ questionId, onCreated }: props) => {
       <DialogTrigger asChild>
         <Button className="w-full">
           <SquarePlus />
-          Questões
+          Nova questão
         </Button>
       </DialogTrigger>
       <DialogContent>

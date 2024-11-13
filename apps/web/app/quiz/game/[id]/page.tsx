@@ -19,6 +19,8 @@ const Home: NextPage<Props> = async ({ params }) => {
     queryFn: ({ queryKey: [_, quizId] }) => getQuizQuery(quizId!)
   })
 
+  console.log(quiz)
+
   return <QuizView quiz={quiz} />
 }
 
