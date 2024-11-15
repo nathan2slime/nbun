@@ -7,7 +7,8 @@ export const signUpSchema = z.object({
     .string({
       required_error
     })
-    .min(1, required_error),
+    .min(1, required_error)
+    .max(12),
   password: z
     .string({
       required_error

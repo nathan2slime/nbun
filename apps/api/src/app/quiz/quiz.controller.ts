@@ -10,10 +10,11 @@ import {
   UseGuards,
   UseInterceptors
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
-import { CreateQuizDto, UpdateQuizDto } from '~/app/quiz/quiz.dto'
+import { RequestHeaders } from '~/app/decorators/header.decorator'
+import { CreateQuizDto, QuizHeader, UpdateQuizDto } from '~/app/quiz/quiz.dto'
 import { QuizInterceptor } from '~/app/quiz/quiz.interceptor'
 import { QuizService } from '~/app/quiz/quiz.service'
 import { Request } from '~/types/app.types'
@@ -30,7 +31,6 @@ export class QuizController {
   }
 
   @Get('show/:id')
-  @UseInterceptors(QuizInterceptor)
   async show(@Param('id') id: string) {
     return this.quizService.getById(id)
   }
@@ -40,21 +40,27 @@ export class QuizController {
     return this.quizService.getByUser(req.user.userId)
   }
 
-  @Get('start/:id')
+  @ApiHeader({ name: 'quiz-id' })
+  @Get('start')
   @UseInterceptors(QuizInterceptor)
-  async start(@Param('id') id: string) {
-    return this.quizService.start(id)
+  async start(@RequestHeaders() headers: QuizHeader) {
+    return this.quizService.start(headers['quiz-id'])
   }
 
-  @Put('update/:id')
+  @ApiHeader({ name: 'quiz-id' })
+  @Put('update')
   @UseInterceptors(QuizInterceptor)
-  async update(@Body() data: UpdateQuizDto, @Param('id') id: string) {
-    return this.quizService.update(id, data)
+  async update(
+    @Body() data: UpdateQuizDto,
+    @RequestHeaders() headers: QuizHeader
+  ) {
+    return this.quizService.update(headers['quiz-id'], data)
   }
 
-  @Delete('delete/:id')
+  @ApiHeader({ name: 'quiz-id' })
+  @Delete('delete')
   @UseInterceptors(QuizInterceptor)
-  async delete(@Param('id') id: string) {
-    return this.quizService.delete(id)
+  async delete(@RequestHeaders() headers: QuizHeader) {
+    return this.quizService.delete(headers['quiz-id'])
   }
 }

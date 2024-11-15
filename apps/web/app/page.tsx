@@ -1,17 +1,23 @@
 'use client'
 
 import { useSnapshot } from 'valtio'
-import { CreateQuiz } from '~/components/create-quiz'
-import { authState } from '~/store/auth.state'
+import { UserAvatar } from '~/components/user-avatar'
+import { UserXp } from '~/components/user-xp'
+
+import { AuthState, authState } from '~/store/auth.state'
+
+import { Session } from '~/types/auth.types'
 
 const Home = () => {
-  const { session } = useSnapshot(authState)
+  const { session } = useSnapshot(authState as AuthState<Session>)
+  const user = session.user
 
   return (
     <div className="flex h-screen w-screen flex-col items-start justify-start">
-      <div className="bg-card border-b-border flex w-full items-center justify-between border-b p-3">
-        <h1 className="text-foreground text-lg font-bold">Quizzes</h1>
-        <CreateQuiz />
+      <div className="flex w-full justify-between p-3">
+        <UserAvatar user={user} />
+
+        <UserXp value={user.experience} />
       </div>
     </div>
   )

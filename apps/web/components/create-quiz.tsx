@@ -22,7 +22,7 @@ export const CreateQuiz = () => {
       },
       {
         onSuccess(data) {
-          router.push('/quiz/config/' + data.id)
+          router.push('/quizzes/edit/' + data.id)
         }
       }
     )
@@ -30,7 +30,7 @@ export const CreateQuiz = () => {
 
   return (
     <Button variant="default" size="icon" onClick={createQuiz}>
-      <Plus />
+      <Plus strokeWidth={1.5} className="text-primary-foreground" width={22} />
     </Button>
   )
 }

@@ -1,9 +1,21 @@
 import { api } from '~/api/client'
-import { UpdateQuizPayload, QuizResponse } from '~/types/quiz.types'
+import { UpdateQuizPayload, Quiz } from '~/types/quiz.types'
 
-export const updateQuizMutation = async (payload: UpdateQuizPayload) => {
-  const { data } = await api.put<QuizResponse>(`/quiz/update/${payload.id}`, {
-    title: payload.title
-  })
+export const updateQuizMutation = async (
+  payload: UpdateQuizPayload,
+  quizId: string
+) => {
+  const { data } = await api.put<Quiz>(
+    '/quiz/update',
+    {
+      title: payload.title
+    },
+    {
+      headers: {
+        ['quiz-id']: quizId
+      }
+    }
+  )
+
   return data
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { SquarePlus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { useContext } from 'react'
 import toast from 'react-hot-toast'
 
@@ -36,7 +36,7 @@ export const CreateOption = ({ questionId }: Props) => {
 
   const createOption = () => {
     const payload = {
-      title: 'Nova opção',
+      title: 'Nova alternativa',
       questionId,
       quizId
     }
@@ -58,8 +58,8 @@ export const CreateOption = ({ questionId }: Props) => {
 
   return (
     <Button onClick={createOption} className="w-full">
-      <SquarePlus />
-      Opção
+      <Plus strokeWidth={1} width={22} />
+      Alternativa
     </Button>
   )
 }

@@ -20,7 +20,8 @@ export class QuizInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest()
     const session = request.user
 
-    const quizId = request.params.id || request.headers.quiz
+    const quizId = request.params.id || request.headers['quiz-id']
+
     const userId = session.userId
 
     return from(this.quizService.isOwner(quizId, userId)).pipe(

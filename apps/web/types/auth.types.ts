@@ -10,10 +10,11 @@ export type Session = {
   user: User
 }
 
-type User = {
+export type User = {
   id: string
   createdAt: string
   updatedAt: string
+  experience: number
   username: string
   avatar: string
 }

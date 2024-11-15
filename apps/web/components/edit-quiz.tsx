@@ -8,10 +8,10 @@ import { getQuestionQuery } from '~/api/queries/get-questions.query'
 import { CreateQuestion } from '~/components/create-question'
 import { QuestionItem } from '~/components/question-item'
 import { Input } from '~/components/ui/input'
-import { QuizResponse, UpdateQuizPayload } from '~/types/quiz.types'
+import { Quiz, UpdateQuizPayload } from '~/types/quiz.types'
 
 type Props = {
-  quiz: QuizResponse
+  quiz: Quiz
 }
 
 type ContextType = {
@@ -32,17 +32,25 @@ export const EditQuiz = (props: Props) => {
   })
 
   const mutation = useMutation({
-    mutationKey: ['update-quiz'],
-    mutationFn: updateQuizMutation
+    mutationKey: ['update-quiz', quiz.id],
+    mutationFn: async ({
+      quizId,
+      variables
+    }: {
+      quizId: string
+      variables: UpdateQuizPayload
+    }) => updateQuizMutation(variables, quizId)
   })
 
   const updateQuiz = () => {
-    const payload: UpdateQuizPayload = {
-      id: quiz.id,
+    const variables: UpdateQuizPayload = {
       title: quiz.title
     }
 
-    mutation.mutate(payload)
+    mutation.mutateAsync({
+      quizId: quiz.id,
+      variables
+    })
   }
 
   const questions = getQuestionsQuery.data
@@ -51,25 +59,33 @@ export const EditQuiz = (props: Props) => {
     <EditQuizContext.Provider value={{ quizId: quiz.id }}>
       <div className="flex flex-col gap-2">
         <Input
-          className="p-3 text-xl font-semibold"
+          className="bg-secondary h-12 px-3 py-4 text-lg font-semibold"
           onBlur={updateQuiz}
+          placeholder="Assunto"
           value={quiz.title || ''}
           onChange={e => setQuiz({ ...quiz, title: e.target.value })}
         />
 
-        <CreateQuestion
-          onCreated={question =>
-            clientQuery.setQueryData(
-              ['get-questions', quiz.id],
-              [...(questions || []), question]
-            )
-          }
-          questionId={quiz.id}
-        />
+        <div className="mt-3 flex items-center justify-between rounded-lg p-2">
+          <h1 className="text-base font-medium tracking-wide">Questões</h1>
+
+          <CreateQuestion
+            onCreated={question =>
+              clientQuery.setQueryData(
+                ['get-questions', quiz.id],
+                [...(questions || []), question]
+              )
+            }
+          />
+        </div>
 
         {questions &&
-          questions.map(question => (
-            <QuestionItem key={question.id} question={question} />
+          questions.map((question, idx) => (
+            <QuestionItem
+              position={idx}
+              key={question.id}
+              question={question}
+            />
           ))}
       </div>
     </EditQuizContext.Provider>

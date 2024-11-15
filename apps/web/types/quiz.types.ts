@@ -1,6 +1,6 @@
 import { QuestionQuizFormData } from '~/lib/schemas/quiz.schemas'
 
-export type QuizResponse = {
+export type Quiz = {
   id: string
   title: string
   userId: string
@@ -9,17 +9,13 @@ export type QuizResponse = {
   startAt: Date | null
 }
 
-export type UpdateQuizPayload = CreateQuizPayload & {
-  id: string
-}
+export type UpdateQuizPayload = CreateQuizPayload
 
 export type CreateQuizPayload = {
   title: string
 }
 
-export type QuestionQuizPayload = QuestionQuizFormData & {
-  quizId: string
-}
+export type QuestionQuizPayload = QuestionQuizFormData
 
 export type QuestionQuizResponse = {
   id: string

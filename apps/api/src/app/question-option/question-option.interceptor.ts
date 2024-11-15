@@ -20,9 +20,10 @@ export class QuestionOptionInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest()
     const session = request.user
 
-    const quizId = request.headers.quiz
-    const questionId = request.headers.question
-    const questionOptionId = request.params.id || request.params.option
+    const quizId = request.headers['quiz-id']
+    const questionId = request.headers['question-id']
+    const questionOptionId =
+      request.params.id || request.params['question-option-id']
     const userId = session.userId
 
     return from(
@@ -34,8 +35,6 @@ export class QuestionOptionInterceptor implements NestInterceptor {
       )
     ).pipe(
       switchMap(isOwner => {
-        console.log(isOwner)
-
         if (isOwner) return next.handle()
 
         return throwError(

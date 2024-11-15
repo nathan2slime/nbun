@@ -4,6 +4,8 @@ model User {
   password String
   avatar   String @default("default")
 
+  experience Int @default(0)
+
   session       Session[]
   quizzes       Quiz[]
   quizResponses QuizResponse[]

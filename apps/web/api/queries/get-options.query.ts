@@ -14,11 +14,8 @@ export const getOptionsQuery = async ({
     '/question/option/paginate',
     {
       headers: {
-        quiz: quizId,
-        question: questionId
-      },
-      params: {
-        questionId
+        ['quiz-id']: quizId,
+        ['question-id']: questionId
       }
     }
   )

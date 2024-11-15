@@ -1,16 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Difficulty } from '@prisma/client'
 import { IsEnum, IsUUID, IsString, IsOptional } from 'class-validator'
+import { QuizHeader } from '~/app/quiz/quiz.dto'
 
 export class CreateQuestionDto {
   @ApiProperty()
   @IsString()
   title: string
-
-  @IsUUID()
-  @ApiProperty()
-  @IsString()
-  quizId: string
 
   @ApiProperty({ enum: Difficulty })
   @IsEnum(Difficulty)
@@ -32,4 +28,11 @@ export class QueryQuestionDto {
   @IsString()
   @IsUUID()
   quizId: string
+}
+
+export class QuestionHeader extends QuizHeader {
+  @ApiProperty()
+  @IsString()
+  @IsUUID()
+  'question-id': string
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { CircleX } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useContext } from 'react'
 
 import { deleteOptionMutation } from '~/api/mutations/quiz/question/option/delete-option.mutation'
@@ -35,7 +35,7 @@ export const DeleteOption = ({ optionId, questionId }: Props) => {
 
   return (
     <Button variant="destructive" onClick={deleteOption}>
-      <CircleX size={35} />
+      <X size={22} strokeWidth={1.6} />
     </Button>
   )
 }

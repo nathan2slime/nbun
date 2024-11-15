@@ -27,7 +27,8 @@ const main = async () => {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      forbidUnknownValues: true
+      forbidUnknownValues: true,
+      validateCustomDecorators: true
     })
   )
   const { httpAdapter } = app.get(HttpAdapterHost)

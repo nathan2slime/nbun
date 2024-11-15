@@ -19,8 +19,8 @@ export class QuestionInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     const request = context.switchToHttp().getRequest()
     const session = request.user
-    const quizId = request.headers.quiz
-    const questionId = request.params.id || request.headers.question
+    const quizId = request.headers['quiz-id']
+    const questionId = request.params.id || request.headers['question-id']
     const userId = session.userId
 
     return from(

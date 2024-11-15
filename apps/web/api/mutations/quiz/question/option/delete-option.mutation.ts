@@ -11,10 +11,11 @@ export const deleteOptionMutation = async ({
   quizId,
   questionId
 }: DeleteOptionMutation) => {
-  const { data } = await api.delete('/question/option/delete/' + id, {
+  const { data } = await api.delete('/question/option/delete', {
     headers: {
-      quiz: quizId,
-      question: questionId
+      ['quiz-id']: quizId,
+      ['question-id']: questionId,
+      ['question-option-id']: id
     }
   })
 

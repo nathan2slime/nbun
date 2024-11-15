@@ -26,15 +26,22 @@ import { QuestionOption } from '~/components/question-option'
 
 type Props = {
   question: QuestionQuizResponse
+  position: number
 }
 
-export const QuestionItem = ({ question }: Props) => {
+export const QuestionItem = ({ question, position }: Props) => {
   const { quizId } = useContext(EditQuizContext)
   const queryClient = useQueryClient()
 
   const editQuestionMutation = useMutation({
     mutationKey: ['put-question'],
-    mutationFn: updateQuestionMutate
+    mutationFn: ({
+      quizId,
+      payload
+    }: {
+      quizId: string
+      payload: UpdateQuestion
+    }) => updateQuestionMutate(quizId, payload)
   })
 
   const getOptions = useQuery({
@@ -72,11 +79,14 @@ export const QuestionItem = ({ question }: Props) => {
 
     onUpdateQuestion(payload)
 
-    editQuestionMutation.mutate(payload, {
-      onSuccess(data) {
-        onUpdateQuestion(data)
+    editQuestionMutation.mutate(
+      { payload, quizId },
+      {
+        onSuccess(data) {
+          onUpdateQuestion(data)
+        }
       }
-    })
+    )
   }
 
   const onEditDifficulty = (value: string) => {
@@ -86,15 +96,18 @@ export const QuestionItem = ({ question }: Props) => {
   }
 
   return (
-    <div className="bg-card flex flex-col gap-2 rounded-md border p-2">
-      <div className="flex gap-2">
-        <Input
-          onBlur={onEditQuestion}
-          onChange={e =>
-            form.setValue('title', e.target.value, { shouldValidate: true })
-          }
-          value={formValues.title}
-        />
+    <div className="bg-accent/60 flex flex-col gap-2 rounded-md border p-2">
+      <div className="flex w-full justify-between gap-2">
+        <div className="flex w-full items-center gap-2">
+          <span className="text-primary text-lg font-bold">{position + 1}</span>
+          <Input
+            onBlur={onEditQuestion}
+            onChange={e =>
+              form.setValue('title', e.target.value, { shouldValidate: true })
+            }
+            value={formValues.title}
+          />
+        </div>
 
         <DeleteQuestion questionId={question.id} />
       </div>

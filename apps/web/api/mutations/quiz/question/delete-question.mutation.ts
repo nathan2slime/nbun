@@ -6,10 +6,10 @@ type Args = {
 }
 
 export const deleteQuestionMutation = async ({ quizId, questionId }: Args) => {
-  const { data } = await api.delete('/question/delete/' + questionId, {
+  const { data } = await api.delete('/question/delete', {
     headers: {
-      quiz: quizId,
-      question: questionId
+      ['quiz-id']: quizId,
+      ['question-id']: questionId
     }
   })
 
