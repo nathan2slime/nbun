@@ -8,19 +8,18 @@ type UpdateOptionMutation = {
 }
 
 export const updateOptionMutation = async ({
-  payload,
+  payload: { id, ...payload },
   quiz,
   question
 }: UpdateOptionMutation) => {
   const { data } = await api.put<OptionResponse>(
-    '/question/option/update/' + payload.id,
-    {
-      title: payload.title
-    },
+    '/question/option/update',
+    payload,
     {
       headers: {
-        quiz,
-        question
+        'question-option-id': id,
+        'quiz-id': quiz,
+        'question-id': question
       }
     }
   )

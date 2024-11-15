@@ -3,6 +3,7 @@ import { CreateOptionPayload, OptionResponse } from '~/types/quiz.types'
 
 export const createOptionMutation = async ({
   quizId,
+  questionId,
   ...payload
 }: CreateOptionPayload) => {
   const { data } = await api.post<OptionResponse>(
@@ -10,8 +11,8 @@ export const createOptionMutation = async ({
     payload,
     {
       headers: {
-        quiz: quizId,
-        question: payload.questionId
+        'quiz-id': quizId,
+        'question-id': questionId
       }
     }
   )

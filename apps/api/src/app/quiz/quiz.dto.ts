@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional, IsString } from 'class-validator'
+import { Transform } from 'class-transformer'
+import { IsOptional, IsString, IsUUID } from 'class-validator'
 
 export class CreateQuizDto {
   @ApiProperty()
@@ -24,4 +25,11 @@ export class JoinMemberDto {
 export class QuizIdDto {
   @IsString()
   quizId: string
+}
+
+export class QuizHeader {
+  @ApiProperty()
+  @IsString()
+  @IsUUID()
+  'quiz-id': string
 }

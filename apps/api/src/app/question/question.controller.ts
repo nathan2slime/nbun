@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Header,
   Param,
   Post,
   Put,
@@ -11,16 +10,19 @@ import {
   UseGuards,
   UseInterceptors
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiHeader, ApiTags } from '@nestjs/swagger'
 
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
+import { RequestHeaders } from '~/app/decorators/header.decorator'
 import {
   CreateQuestionDto,
   QueryQuestionDto,
+  QuestionHeader,
   UpdateQuestionDto
 } from '~/app/question/question.dto'
 import { QuestionInterceptor } from '~/app/question/question.interceptor'
 import { QuestionService } from '~/app/question/question.service'
+import { QuizHeader } from '~/app/quiz/quiz.dto'
 import { QuizInterceptor } from '~/app/quiz/quiz.interceptor'
 
 @ApiTags('Question')
@@ -30,15 +32,25 @@ export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Post('create')
+  @ApiHeader({ name: 'quiz-id' })
   @UseInterceptors(QuizInterceptor)
-  async create(@Body() data: CreateQuestionDto) {
-    return this.questionService.create(data)
+  async create(
+    @Body() data: CreateQuestionDto,
+    @RequestHeaders() headers: QuizHeader
+  ) {
+    const quizId = headers['quiz-id']
+
+    return this.questionService.create(quizId, data)
   }
 
-  @Put('update/:id')
+  @Put('update')
+  @ApiHeader({ name: 'question-id' })
   @UseInterceptors(QuestionInterceptor)
-  async update(@Body() data: UpdateQuestionDto, @Param('id') id: string) {
-    return this.questionService.update(id, data)
+  async update(
+    @Body() data: UpdateQuestionDto,
+    @RequestHeaders() headers: QuestionHeader
+  ) {
+    return this.questionService.update(headers['question-id'], data)
   }
 
   @Get('paginate')
@@ -46,9 +58,10 @@ export class QuestionController {
     return this.questionService.paginate(data)
   }
 
-  @Delete('delete/:id')
+  @ApiHeader({ name: 'question-id' })
+  @Delete('delete')
   @UseInterceptors(QuestionInterceptor)
-  async delete(@Param('id') id: string) {
-    return this.questionService.delete(id)
+  async delete(@RequestHeaders() headers: QuestionHeader) {
+    return this.questionService.delete(headers['question-id'])
   }
 }

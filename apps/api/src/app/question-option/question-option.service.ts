@@ -11,7 +11,7 @@ import { PrismaService } from '~/database/prisma.service'
 export class QuestionOptionService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create({ questionId, ...data }: CreateQuestionOptionDto) {
+  async create(questionId: string, { ...data }: CreateQuestionOptionDto) {
     return this.prisma.questionOption.create({
       data: {
         ...data,

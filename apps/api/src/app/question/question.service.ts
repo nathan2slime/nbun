@@ -30,7 +30,7 @@ export class QuestionService {
     return this.maxOptions
   }
 
-  async create({ quizId, ...payload }: CreateQuestionDto) {
+  async create(quizId: string, payload: CreateQuestionDto) {
     return this.prisma.question.create({
       data: { ...payload, quiz: { connect: { id: quizId } } }
     })

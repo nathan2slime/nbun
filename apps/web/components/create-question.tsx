@@ -1,10 +1,10 @@
 'use client'
 
 import toast from 'react-hot-toast'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { SquarePlus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
 
 import {
@@ -44,13 +44,14 @@ import {
 } from '~/components/ui/select'
 import { createQuestionMutation } from '~/api/mutations/quiz/question/create-question.mutation'
 import { DIFFICULTIES } from '~/constants'
+import { EditQuizContext } from '~/components/edit-quiz'
 
 type props = {
-  questionId: string
   onCreated: (data: QuestionQuizResponse) => unknown
 }
 
-export const CreateQuestion = ({ questionId, onCreated }: props) => {
+export const CreateQuestion = ({ onCreated }: props) => {
+  const { quizId } = useContext(EditQuizContext)
   const [isOpenDialog, setIsOpenDialog] = useState(false)
 
   const form = useForm<QuestionQuizFormData>({
@@ -64,7 +65,8 @@ export const CreateQuestion = ({ questionId, onCreated }: props) => {
 
   const mutation = useMutation({
     mutationKey: ['create-question'],
-    mutationFn: createQuestionMutation
+    mutationFn: (args: { quizId: string; payload: QuestionQuizPayload }) =>
+      createQuestionMutation(args.quizId, args.payload)
   })
 
   const { handleSubmit, control } = form
@@ -72,26 +74,28 @@ export const CreateQuestion = ({ questionId, onCreated }: props) => {
   const onSubmit = (values: QuestionQuizFormData) => {
     const payload: QuestionQuizPayload = {
       difficulty: values.difficulty,
-      title: values.title,
-      quizId: questionId
+      title: values.title
     }
 
-    mutation.mutate(payload, {
-      onSuccess(data) {
-        toast.success('Questão criada!')
+    mutation.mutateAsync(
+      { quizId, payload },
+      {
+        onSuccess(data) {
+          toast.success('Questão criada!')
 
-        onCreated(data)
-        setIsOpenDialog(false)
+          onCreated(data)
+          setIsOpenDialog(false)
+        }
       }
-    })
+    )
   }
 
   return (
     <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
       <DialogTrigger asChild>
-        <Button className="w-full">
-          <SquarePlus />
-          Nova questão
+        <Button className="w-full max-w-[80px] font-semibold">
+          <Plus strokeWidth={1.6} width={22} />
+          Nova
         </Button>
       </DialogTrigger>
       <DialogContent>

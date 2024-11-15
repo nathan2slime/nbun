@@ -29,7 +29,7 @@
     "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.2",
     "husky": "^9.1.6",
-    "turbo": "^2.2.3"
+    "turbo": "^2.3.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",

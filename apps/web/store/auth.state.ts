@@ -2,9 +2,9 @@ import { proxy } from 'valtio'
 
 import { Session } from '~/types/auth.types'
 
-export type AuthState = {
+export type AuthState<T = Session | null> = {
   logged: boolean
-  session: Session | null
+  session: T
 }
 
 export const storageKey = '@nbun/web'
