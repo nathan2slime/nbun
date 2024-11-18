@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Difficulty } from '@prisma/client'
+import { Difficulty } from '@nbun/database'
 import { IsEnum, IsUUID, IsString, IsOptional } from 'class-validator'
 import { QuizHeader } from '~/app/quiz/quiz.dto'
 

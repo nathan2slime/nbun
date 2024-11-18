@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { Session } from '@prisma/client'
+import { Session } from '@nbun/database'
 import { hash, compare } from 'bcryptjs'
 
 import { SignInDto, SignUpDto } from '~/app/auth/auth.dto'

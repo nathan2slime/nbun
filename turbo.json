@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": ["*"],
   "tasks": {
     "build": {
       "outputs": ["dist/**"]
@@ -11,6 +12,11 @@
       "persistent": true,
       "cache": false
     },
-    "start": {}
+    "start": {},
+    "db:generate": {},
+    "db:migrate:dev": {},
+    "db:push": {},
+    "db:migrate:deploy": {},
+    "db:migrate:reset": {}
   }
 }

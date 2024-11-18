@@ -9,13 +9,12 @@
     "dev": "dotenv -- turbo run dev",
     "build": "dotenv -- turbo run build",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "db:migrate:dev": "dotenv -- prisma migrate dev",
-    "studio": "prisma studio",
-    "db:migrate:deploy": "dotenv -- prisma migrate deploy",
-    "db:seed": "dotenv -- ts-node-dev ./prisma/seeds/index.ts",
-    "db:generate": "prisma generate",
-    "db:push": "dotenv -- prisma db push",
-    "db:migrate:reset": "dotenv -- prisma migrate reset",
+    "db:migrate:dev": "dotenv -- turbo run db:migrate:dev",
+    "studio": "dotenv -- turbo run studio",
+    "db:migrate:deploy": "dotenv -- turbo run db:migrate:deploy",
+    "db:generate": "dotenv -- turbo run db:generate",
+    "db:push": "dotenv -- turbo run db:push",
+    "db:migrate:reset": "dotenv -- turbo run db:migrate:reset",
     "commit": "git-cz"
   },
   "config": {
@@ -24,8 +23,6 @@
     }
   },
   "dependencies": {
-    "@prisma/client": "^5.21.1",
-    "prisma": "^5.21.1",
     "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.2",
     "husky": "^9.1.6",
@@ -34,10 +31,10 @@
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
-    "prettier-plugin-tailwindcss": "^0.6.8",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8"
   },
   "packageManager": "pnpm@9.10.0"
 }

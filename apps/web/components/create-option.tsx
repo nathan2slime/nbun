@@ -10,9 +10,10 @@ import { CreateOptionPayload, OptionResponse } from '~/types/quiz.types'
 
 type Props = {
   questionId: string
+  disabled: boolean
 }
 
-export const CreateOption = ({ questionId }: Props) => {
+export const CreateOption = ({ questionId, disabled }: Props) => {
   const { quizId } = useContext(EditQuizContext)
 
   const queryClient = useQueryClient()
@@ -57,7 +58,7 @@ export const CreateOption = ({ questionId }: Props) => {
   }
 
   return (
-    <Button onClick={createOption} className="w-full">
+    <Button disabled={disabled} onClick={createOption} className="w-full">
       <Plus strokeWidth={1} width={22} />
       Alternativa
     </Button>

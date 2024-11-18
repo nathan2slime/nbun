@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu'
+import { cn } from '~/lib/utils'
 
 type Props = {
   data: Quiz
@@ -19,7 +20,13 @@ type Props = {
 
 export const CardQuiz = ({ data }: Props) => {
   return (
-    <div className="bg-accent/50 rounded-md p-3">
+    <Link
+      href={'/quizzes/game/' + data.id}
+      className={cn(
+        'bg-accent/50 rounded-md p-3',
+        data.startAt && 'bg-primary/30'
+      )}
+    >
       <div className="flex w-full items-center justify-between">
         <h1 className="text-foreground/80 text-base font-medium tracking-wide">
           {data.title}
@@ -43,6 +50,6 @@ export const CardQuiz = ({ data }: Props) => {
       <p className="text-accent-foreground text-xs">
         Criado {formatRelative(data.createdAt, new Date(), { locale: ptBR })}
       </p>
-    </div>
+    </Link>
   )
 }

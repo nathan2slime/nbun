@@ -12,8 +12,10 @@ export const AppLayout = ({ children }: Props) => {
   if (pathname.includes('auth')) return <>{children}</>
 
   return (
-    <div className="h-screen w-screen overflow-y-auto overflow-x-hidden">
-      {children}
+    <div className="h-screen w-screen overflow-hidden">
+      <div className="h-[calc(100%-75px)] w-full overflow-y-auto">
+        {children}
+      </div>
       <TabBar />
     </div>
   )

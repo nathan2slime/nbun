@@ -3,7 +3,8 @@ import toast from 'react-hot-toast'
 import { io, Socket } from 'socket.io-client'
 
 export const socket: Socket = io(process.env.NEXT_PUBLIC_API_CLIENT_URL, {
-  withCredentials: true
+  withCredentials: true,
+  autoConnect: false
 })
 
 export const api = axios.create({
