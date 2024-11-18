@@ -1,4 +1,4 @@
-export const REQUIRED_ERROR = 'Esse campo é obrigatório.'
+export const REQUIRED_ERROR = 'Preencha esse campo'
 
 export const DIFFICULTIES = [
   {

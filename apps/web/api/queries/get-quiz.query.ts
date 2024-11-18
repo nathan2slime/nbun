@@ -1,4 +1,4 @@
-import { Quiz } from '@prisma/client'
+import { Quiz } from '@nbun/database'
 import { api } from '~/api/server'
 
 export const getQuizQuery = async (quizId: string) => {

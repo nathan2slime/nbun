@@ -60,7 +60,7 @@ const Signing: NextPage = () => {
         authState.session = data
         authState.logged = true
 
-        router.push('/app')
+        router.push('/')
       }
     })
 

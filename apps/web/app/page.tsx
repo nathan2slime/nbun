@@ -13,7 +13,7 @@ const Home = () => {
   const user = session.user
 
   return (
-    <div className="flex h-screen w-screen flex-col items-start justify-start">
+    <div className="flex flex-col items-start justify-start">
       <div className="flex w-full justify-between p-3">
         <UserAvatar user={user} />
 

@@ -1,0 +1,27 @@
+{
+  "name": "@nbun/database",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm db:generate && tsup",
+    "dev": "tsup --watch",
+    "db:migrate:dev": "prisma migrate dev",
+    "studio": "prisma studio",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:migrate:reset": "prisma migrate reset",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
+  },
+  "devDependencies": {
+    "@nbun/tsconfig": "workspace:*",
+    "@prisma/client": "^5.22.0",
+    "@types/node": "^22.9.0",
+    "prisma": "^5.22.0",
+    "typescript": "latest"
+  },
+  "dependencies": {
+    "tsup": "^8.3.5"
+  }
+}

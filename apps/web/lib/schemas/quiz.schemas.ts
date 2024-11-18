@@ -8,7 +8,7 @@ export const questionSchema = z.object({
       required_error: REQUIRED_ERROR
     })
     .min(3, {
-      message: 'O titulo deve conter no mínimo 3 letras.'
+      message: 'O titulo deve conter no mínimo 3 letras'
     }),
   difficulty: z.nativeEnum(Difficulty, {
     required_error: REQUIRED_ERROR

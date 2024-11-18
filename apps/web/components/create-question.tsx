@@ -99,7 +99,7 @@ export const CreateQuestion = ({ onCreated }: props) => {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>
+        <DialogHeader className="text-start">
           <DialogTitle>Crie uma questão</DialogTitle>
         </DialogHeader>
 
@@ -114,7 +114,7 @@ export const CreateQuestion = ({ onCreated }: props) => {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormDescription>Pergunta da questão.</FormDescription>
+                  <FormDescription>Pergunta da questão</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

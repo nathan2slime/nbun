@@ -1,6 +1,4 @@
-import { Session } from '@prisma/client'
-
-import { JwtAuthPayload } from '~/types/auth.types'
+import { Session } from '@nbun/database'
 
 export type Request = Express.Request & {
   user: Session

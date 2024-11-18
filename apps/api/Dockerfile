@@ -27,30 +27,22 @@ WORKDIR /app
 # First install dependencies (as they change less often)
 COPY --from=builder /app/out/json/ .
 RUN pnpm install
-
 # Build the project and its dependencies
-COPY --from=builder /app/out/full/ .
-COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/out/full/ .
+COPY turbo.json turbo.json
 
-# Uncomment and use build args to enable remote caching
-# ARG TURBO_TEAM
-# ENV TURBO_TEAM=$TURBO_TEAM
-
-# ARG TURBO_TOKEN
-# ENV TURBO_TOKEN=$TURBO_TOKEN
-
-RUN pnpm db:generate
-RUN pnpm turbo build --filter=@nbun/api...
+ENV NODE_ENV production
+RUN pnpm turbo build --filter=@nbun/database
+RUN pnpm turbo build --filter=@nbun/api
 
 FROM base AS runner
 WORKDIR /app
 
-# Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 USER nodejs
-COPY --from=installer /app .
+COPY --from=installer --chown=nodejs:nodejs /app .
 
 EXPOSE 5400
 

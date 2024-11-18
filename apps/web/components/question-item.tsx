@@ -113,7 +113,10 @@ export const QuestionItem = ({ question, position }: Props) => {
       </div>
 
       <div className="flex w-full gap-2">
-        <CreateOption questionId={question.id} />
+        <CreateOption
+          disabled={(questionOptions || []).length >= 4}
+          questionId={question.id}
+        />
 
         <Select
           value={question.difficulty}

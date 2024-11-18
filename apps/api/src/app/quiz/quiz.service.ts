@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Session } from '@prisma/client'
+import { Session } from '@nbun/database'
 
 import { CreateQuizDto, UpdateQuizDto } from '~/app/quiz/quiz.dto'
 import { PrismaService } from '~/database/prisma.service'
