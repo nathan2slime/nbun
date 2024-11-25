@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { User } from '@nbun/database'
 
 import { PrismaService } from '~/database/prisma.service'
 import { JwtAuthPayload } from '~/types/auth.types'
 import { exclude } from '~/database/utils'
 import { env } from '~/env'
+import { redisClient } from '~/database/redis'
 
 @Injectable()
 export class SessionService {
@@ -13,20 +15,22 @@ export class SessionService {
     private readonly prisma: PrismaService
   ) {}
 
-  async create(userId: string) {
-    // await this.deleteAllByUserId(userId)
+  getCacheKey(id: string) {
+    return 'session:' + id
+  }
 
-    const session = await this.prisma.session.create({
+  async create(user: Omit<User, 'password'>) {
+    const newSession = await this.prisma.session.create({
       data: {
         user: {
           connect: {
-            id: userId
+            id: user.id
           }
         }
       }
     })
 
-    const payload = { userId, sessionId: session.id }
+    const payload = { userId: user.id, sessionId: newSession.id }
 
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: env.SESSION_KEY,
@@ -39,23 +43,30 @@ export class SessionService {
 
     const data = await this.prisma.session.update({
       where: {
-        id: session.id
+        id: newSession.id
       },
       data: {
         refreshToken,
         accessToken
-      },
-      include: {
-        user: true
       }
     })
 
-    const user = exclude(data.user, ['password'])
+    const session = { ...data, user }
 
-    return { ...data, user }
+    await redisClient.set(
+      this.getCacheKey(session.id),
+      JSON.stringify(session),
+      {
+        EX: 3600
+      }
+    )
+
+    return session
   }
 
   async expire(id: string) {
+    await redisClient.del(this.getCacheKey(id))
+
     await this.prisma.session.delete({
       where: { id }
     })
@@ -70,33 +81,64 @@ export class SessionService {
       }
     )
 
-    const session = await this.prisma.session.update({
+    const data = await this.prisma.session.update({
       where: { id: payload.sessionId },
       data: { accessToken },
       include: { user: true }
     })
 
-    if (session) {
-      const user = exclude(session.user, ['password'])
+    if (data) {
+      const user = exclude(data.user, ['password'])
 
-      return { ...session, user }
+      const session = { ...data, user }
+      await redisClient.set(
+        this.getCacheKey(data.id),
+        JSON.stringify(session),
+        {
+          EX: 3600
+        }
+      )
+
+      return session
     }
   }
 
   async deleteAllByUserId(userId: string) {
+    const sessions = await this.prisma.session.findMany({
+      where: { userId },
+      select: {
+        id: true
+      }
+    })
+
+    const cacheKeys = sessions.map(session => this.getCacheKey(session.id))
+    await redisClient.del(cacheKeys)
+
     return this.prisma.session.deleteMany({ where: { userId } })
   }
 
   async findById(id: string) {
-    const session = await this.prisma.session.findUnique({
+    const cachedSession = await redisClient.get(this.getCacheKey(id))
+    if (cachedSession) return JSON.parse(cachedSession)
+
+    const data = await this.prisma.session.findUnique({
       where: { id },
       include: { user: true }
     })
 
-    if (session) {
-      const user = exclude(session.user, ['password'])
+    if (data) {
+      const user = exclude(data.user, ['password'])
+      const session = { ...data, user }
 
-      return { ...session, user }
+      await redisClient.set(
+        this.getCacheKey(data.id),
+        JSON.stringify(session),
+        {
+          EX: 3600
+        }
+      )
+
+      return session
     }
   }
 }
