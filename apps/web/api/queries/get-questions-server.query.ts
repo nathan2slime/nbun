@@ -1,7 +1,7 @@
-import { api } from '~/api/client'
+import { api } from '~/api/server'
 import { QuestionQuizResponse } from '~/types/quiz.types'
 
-export const getQuestionQuery = async (quizId: string) => {
+export const getQuestionQueryServer = async (quizId: string) => {
   const { data } = await api.get<QuestionQuizResponse[]>('/question/paginate', {
     params: {
       quizId

@@ -32,7 +32,7 @@ export class AuthService {
 
     user.password = undefined
 
-    const session = await this.sessionService.create(user.id)
+    const session = await this.sessionService.create(user)
 
     return session
   }
@@ -49,7 +49,7 @@ export class AuthService {
 
     const user = await this.userService.create(data)
 
-    const session = await this.sessionService.create(user.id)
+    const session = await this.sessionService.create(user)
 
     return session
   }

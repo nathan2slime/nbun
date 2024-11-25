@@ -10,8 +10,8 @@ type Props = {
   data: Quiz[]
 }
 
-export const FeedQuiz = ({ data }: Props) => {
-  const [quizzes, setQuizzes] = useState(data)
+export const FeedQuiz = ({ data = [] }: Props) => {
+  const [quizzes, setQuizzes] = useState(data || [])
 
   return (
     <div className="flex flex-col gap-1">

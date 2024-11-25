@@ -15,9 +15,9 @@ export class QuestionService {
   maxOptions = 4
 
   timeRule: Record<Difficulty, number> = {
-    EASY: 15,
-    MEDIUM: 25,
-    HARD: 35
+    EASY: 10,
+    MEDIUM: 10,
+    HARD: 10
   }
 
   scoringRule: Record<Difficulty, number> = {
@@ -52,6 +52,7 @@ export class QuestionService {
     const levels = await this.prisma.question.findMany({
       where: { quizId },
       select: {
+        id: true,
         difficulty: true
       }
     })

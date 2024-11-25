@@ -26,6 +26,7 @@ const getWsCookies = (req: Request) => {
     return
   }
 }
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly sessionService: SessionService) {

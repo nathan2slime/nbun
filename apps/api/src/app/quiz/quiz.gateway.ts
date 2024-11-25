@@ -19,6 +19,7 @@ import { GetWebSocketSessionDto } from '~/app/websocket-session/websocket-sessio
 import { QuestionService } from '~/app/question/question.service'
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
 import { QuizService } from '~/app/quiz/quiz.service'
+import { PayloadQuestionTime } from '~/app/quiz/quiz.type'
 
 import { env } from '~/env'
 
@@ -38,7 +39,7 @@ export class QuizGateway implements OnGatewayDisconnect {
     private readonly webSocketSessionService: WebSocketSessionService
   ) {}
 
-  private times: Map<string, NodeJS.Timeout> = new Map()
+  private times: Map<string, PayloadQuestionTime> = new Map()
 
   @WebSocketServer()
   server: Server
@@ -89,9 +90,40 @@ export class QuizGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('start')
   async start(@MessageBody() data: QuizIdDto) {
+    if (this.times.has(data.quizId)) return
+
     await this.quizService.start(data.quizId)
-    const gameRule = await this.questionService.getGameRule(data.quizId)
+    const gameRules = await this.questionService.getGameRule(data.quizId)
 
     this.server.emit('start:' + data.quizId)
+
+    for (const gameRule of gameRules) {
+      const index = gameRules.indexOf(gameRule)
+
+      const { id: questionId } = gameRule
+
+      const payload: PayloadQuestionTime = {
+        time: gameRule.time,
+        questionId,
+        at: new Date()
+      }
+
+      await new Promise<boolean>(resolve => {
+        this.times.set(data.quizId, payload)
+
+        this.server.emit('start:question:' + data.quizId, payload)
+
+        setTimeout(() => {
+          this.server.emit('finish:question:' + data.quizId, payload)
+
+          resolve(true)
+        }, gameRule.time * 1000)
+      })
+
+      if (index == gameRules.length - 1) {
+        this.times.delete(data.quizId)
+        this.server.emit('close:' + data.quizId)
+      }
+    }
   }
 }

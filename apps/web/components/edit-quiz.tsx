@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createContext, useState } from 'react'
 
 import { updateQuizMutation } from '~/api/mutations/quiz/update-quiz.mutation'
-import { getQuestionQuery } from '~/api/queries/get-questions.query'
+import { getQuestionQueryClient } from '~/api/queries/get-questions-client.query'
 import { CreateQuestion } from '~/components/create-question'
 import { QuestionItem } from '~/components/question-item'
 import { Input } from '~/components/ui/input'
@@ -28,7 +28,7 @@ export const EditQuiz = (props: Props) => {
 
   const getQuestionsQuery = useQuery({
     queryKey: ['get-questions', quiz.id],
-    queryFn: ({ queryKey: [_, quizId] }) => getQuestionQuery(quizId!)
+    queryFn: ({ queryKey: [_, quizId] }) => getQuestionQueryClient(quizId!)
   })
 
   const mutation = useMutation({
