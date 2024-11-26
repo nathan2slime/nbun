@@ -22,4 +22,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: pnpm install
-      - run: pnpm build
+      - run: pnpm build --filter=@nbun/database
+      - run: pnpm build --filter=@nbun/web
+      - run: pnpm build --filter=@nbun/api
