@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
 import { Difficulty } from '@nbun/database'
-import { IsEnum, IsUUID, IsString, IsOptional } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator'
 import { QuizHeader } from '~/app/quiz/quiz.dto'
 
 export class CreateQuestionDto {

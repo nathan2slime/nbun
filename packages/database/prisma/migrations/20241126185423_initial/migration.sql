@@ -28,6 +28,7 @@ CREATE TABLE "QuestionOption" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "questionId" TEXT NOT NULL,
+    "correct" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "QuestionOption_pkey" PRIMARY KEY ("id")
 );
@@ -46,7 +47,7 @@ CREATE TABLE "QuestionResponse" (
     "id" TEXT NOT NULL,
     "quizResponseId" TEXT NOT NULL,
     "questionId" TEXT NOT NULL,
-    "questionOptionId" TEXT NOT NULL,
+    "selectedOptionId" TEXT NOT NULL,
 
     CONSTRAINT "QuestionResponse_pkey" PRIMARY KEY ("id")
 );
@@ -77,6 +78,9 @@ CREATE TABLE "User" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "QuestionOption_questionId_key" ON "QuestionOption"("questionId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- AddForeignKey
@@ -101,7 +105,7 @@ ALTER TABLE "QuestionResponse" ADD CONSTRAINT "QuestionResponse_quizResponseId_f
 ALTER TABLE "QuestionResponse" ADD CONSTRAINT "QuestionResponse_questionId_fkey" FOREIGN KEY ("questionId") REFERENCES "Question"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "QuestionResponse" ADD CONSTRAINT "QuestionResponse_questionOptionId_fkey" FOREIGN KEY ("questionOptionId") REFERENCES "QuestionOption"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "QuestionResponse" ADD CONSTRAINT "QuestionResponse_selectedOptionId_fkey" FOREIGN KEY ("selectedOptionId") REFERENCES "QuestionOption"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

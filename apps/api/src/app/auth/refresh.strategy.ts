@@ -1,10 +1,10 @@
-import { ExtractJwt, Strategy } from 'passport-jwt'
-import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { PassportStrategy } from '@nestjs/passport'
 import { Request } from 'express'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 
-import { env } from '~/env'
 import { SessionService } from '~/app/session/session.service'
+import { env } from '~/env'
 import { JwtAuthPayload } from '~/types/auth.types'
 
 @Injectable()
@@ -17,7 +17,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
           if (req) {
             const data = req.cookies[env.AUTH_COOKIE]
 
-            if (data && data.refreshToken) return data.refreshToken
+            if (data?.refreshToken) return data.refreshToken
           }
 
           return null

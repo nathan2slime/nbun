@@ -6,7 +6,7 @@ type Props = {
 
 export const UserXp = ({ value }: Props) => {
   return (
-    <div className="bg-secondary text-secondary-foreground flex h-fit items-center justify-center gap-1 rounded-lg p-2 text-base">
+    <div className="flex h-fit items-center justify-center gap-1 rounded-lg bg-secondary p-2 text-base text-secondary-foreground">
       <Zap width={18} strokeWidth={1.6} />
       {value}
     </div>

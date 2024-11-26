@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
-import { io, Socket } from 'socket.io-client'
+import { Socket, io } from 'socket.io-client'
 
 export const socket: Socket = io(process.env.NEXT_PUBLIC_API_CLIENT_URL, {
   withCredentials: true,

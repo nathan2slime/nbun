@@ -25,7 +25,7 @@ export const DeleteQuestion = ({ questionId }: Props) => {
     queryClient.setQueryData(
       ['get-questions', quizId],
       (questions: QuestionQuizResponse[]) =>
-        (questions || []).filter(e => e.id != questionId)
+        (questions || []).filter(e => e.id !== questionId)
     )
   }
 

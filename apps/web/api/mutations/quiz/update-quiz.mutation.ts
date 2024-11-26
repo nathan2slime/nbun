@@ -1,5 +1,5 @@
 import { api } from '~/api/client'
-import { UpdateQuizPayload, Quiz } from '~/types/quiz.types'
+import { Quiz, UpdateQuizPayload } from '~/types/quiz.types'
 
 export const updateQuizMutation = async (
   payload: UpdateQuizPayload,

@@ -7,7 +7,7 @@ import {
   NestInterceptor
 } from '@nestjs/common'
 import { from, throwError } from 'rxjs'
-import { switchMap, catchError } from 'rxjs/operators'
+import { catchError, switchMap } from 'rxjs/operators'
 
 import { QuizService } from '~/app/quiz/quiz.service'
 import { FORBIDDEN_QUIZ_MESSAGE } from '~/errors'

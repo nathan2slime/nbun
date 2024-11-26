@@ -1,11 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator'
+
 import { QuestionHeader } from '~/app/question/question.dto'
 
 export class CreateQuestionOptionDto {
   @IsNotEmpty()
   @ApiProperty()
   title: string
+
+  @ApiProperty({ required: false })
+  correct: boolean = false
 }
 
 export class UpdateQuestionOptionDto {

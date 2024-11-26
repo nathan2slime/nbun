@@ -49,7 +49,7 @@ export const CreateOption = ({ questionId, disabled }: Props) => {
         queryClient.setQueryData(
           ['get-options', questionId],
           (prev: OptionResponse[] = []) =>
-            prev.map(e => (e.id == id ? data : e))
+            prev.map(e => (e.id === id ? data : e))
         )
 
         toast.success('Nova opção criada!')

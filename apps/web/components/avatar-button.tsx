@@ -15,7 +15,7 @@ export const AvatarButton = ({ title, src, active, ...props }: Props) => {
       {...props}
       className={cn(
         'h-[45px] w-[45px] cursor-pointer rounded-full',
-        active && 'ring-primary ring-2'
+        active && 'ring-2 ring-primary'
       )}
     >
       <Image

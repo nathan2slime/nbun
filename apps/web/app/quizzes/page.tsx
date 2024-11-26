@@ -18,7 +18,7 @@ const Quizzes = async () => {
   return (
     <div className="h-full w-full p-3">
       <div className="flex w-full items-end justify-between">
-        <h1 className="text-lg font-semibold tracking-wide">Quizzes</h1>
+        <h1 className="font-semibold text-lg tracking-wide">Quizzes</h1>
 
         <CreateQuiz />
       </div>

@@ -3,9 +3,9 @@ import { Baloo_2 } from 'next/font/google'
 
 import { AppChildren } from '~/types'
 
-import { Providers } from '~/components/providers'
 import { AuthGuard } from '~/components/auth-guard'
 import { AppLayout } from '~/components/layout-root'
+import { Providers } from '~/components/providers'
 
 import { cn } from '~/lib/utils'
 

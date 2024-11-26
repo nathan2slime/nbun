@@ -2,10 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useContext, useState } from 'react'
 
 import { updateOptionMutation } from '~/api/mutations/quiz/question/option/update-option.mutation'
-import { Input } from '~/components/ui/input'
-import { OptionResponse, UpdateOptionPayload } from '~/types/quiz.types'
 import { DeleteOption } from '~/components/delete-question-option'
 import { EditQuizContext } from '~/components/edit-quiz'
+import { Input } from '~/components/ui/input'
+import { OptionResponse, UpdateOptionPayload } from '~/types/quiz.types'
 
 type Props = {
   data: OptionResponse
@@ -26,7 +26,7 @@ export const QuestionOption = ({ data, questionId }: Props) => {
     queryClient.setQueryData(
       ['get-options', questionId],
       (prev: OptionResponse[]) =>
-        (prev || []).map(e => (e.id == payload.id ? payload : e))
+        (prev || []).map(e => (e.id === payload.id ? payload : e))
     )
 
   const updateOption = () => {

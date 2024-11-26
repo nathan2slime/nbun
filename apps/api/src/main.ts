@@ -1,18 +1,18 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core'
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
+import { HttpAdapterHost, NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
 
 import 'reflect-metadata'
 
 import { AppModule } from '~/app/app.module'
-import { env } from '~/env'
 import {
   AllExceptionsFilter,
   HttpExceptionFilter
 } from '~/app/filters/http-expection'
-import { logger } from '~/logger'
 import { redisClient } from '~/database/redis'
+import { env } from '~/env'
+import { logger } from '~/logger'
 
 const main = async () => {
   const app = await NestFactory.create(AppModule)

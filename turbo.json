@@ -14,7 +14,10 @@
     },
     "start": {},
     "db:generate": {},
-    "db:migrate:dev": {},
+    "db:migrate:dev": {
+      "cache": false,
+      "interactive": true
+    },
     "db:push": {},
     "db:migrate:deploy": {},
     "db:migrate:reset": {}

@@ -9,7 +9,7 @@ type Response = {
 } & Quiz
 
 export const getQuizFormQuery = async (quizId: string) => {
-  const { data } = await api.get<Response>('/quiz/form/' + quizId)
+  const { data } = await api.get<Response>(`/quiz/form/${quizId}`)
 
   return data
 }

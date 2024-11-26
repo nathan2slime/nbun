@@ -1,12 +1,12 @@
+import { User } from '@nbun/database'
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { User } from '@nbun/database'
 
 import { PrismaService } from '~/database/prisma.service'
-import { JwtAuthPayload } from '~/types/auth.types'
+import { redisClient } from '~/database/redis'
 import { exclude } from '~/database/utils'
 import { env } from '~/env'
-import { redisClient } from '~/database/redis'
+import { JwtAuthPayload } from '~/types/auth.types'
 
 @Injectable()
 export class SessionService {
@@ -16,7 +16,7 @@ export class SessionService {
   ) {}
 
   getCacheKey(id: string) {
-    return 'session:' + id
+    return `session:${id}`
   }
 
   async create(user: Omit<User, 'password'>) {

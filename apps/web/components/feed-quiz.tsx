@@ -16,7 +16,7 @@ export const FeedQuiz = ({ data = [] }: Props) => {
   return (
     <div className="flex flex-col gap-1">
       <DeleteQuiz
-        onDelete={id => setQuizzes(prev => prev.filter(e => e.id != id))}
+        onDelete={id => setQuizzes(prev => prev.filter(e => e.id !== id))}
       />
 
       {quizzes.map(quiz => {

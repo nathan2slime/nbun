@@ -25,11 +25,8 @@ model Question {
 
   difficulty Difficulty @default(MEDIUM)
 
-  correctOptionId String?         @unique
-  correctOption   QuestionOption? @relation("correctOption", fields: [correctOptionId], references: [id])
-
   quiz      Quiz               @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  options   QuestionOption[]   @relation("options")
+  options   QuestionOption[]  
   responses QuestionResponse[]
 }
 
@@ -38,8 +35,9 @@ model QuestionOption {
   title      String
   questionId String @unique
 
-  question          Question           @relation("options", fields: [questionId], references: [id], onDelete: Cascade)
-  fromCorrectOption Question?          @relation("correctOption")
+  correct Boolean @default(false)
+
+  question          Question           @relation(fields: [questionId], references: [id], onDelete: Cascade)
   responses         QuestionResponse[]
 }
 

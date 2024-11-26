@@ -40,22 +40,24 @@ export const QuizView = ({ quiz, questions }: Props) => {
 
   let timer: NodeJS.Timeout | undefined = undefined
 
-  const memberId = data!.userId
+  const memberId = data?.userId
   const quizId = quiz.id
 
-  const isQuizOwner = memberId == quiz.userId
+  const isQuizOwner = memberId === quiz.userId
 
   const addNewMember = (data: string) => {
     setMembers(prev => {
-      const item = prev.find(e => e == data)
-      if (!!item) return prev
+      const item = prev.find(e => e === data)
+      if (item) return prev
 
       return [...prev, data]
     })
   }
 
   const deleteMember = (connection: Connection) => {
-    setMembers(prev => prev.filter(memberId => memberId != connection.memberId))
+    setMembers(prev =>
+      prev.filter(memberId => memberId !== connection.memberId)
+    )
   }
 
   useEffect(() => {
@@ -64,8 +66,8 @@ export const QuizView = ({ quiz, questions }: Props) => {
     socket.emit('members', { quizId })
     socket.on('members', addNewMember)
 
-    socket.on('join:' + quizId, addNewMember)
-    socket.on('leave:' + quizId, deleteMember)
+    socket.on(`join:${quizId}`, addNewMember)
+    socket.on(`leave:${quizId}`, deleteMember)
 
     if (!isQuizOwner)
       socket.emit('onquiz', {
@@ -73,12 +75,12 @@ export const QuizView = ({ quiz, questions }: Props) => {
         memberId
       })
 
-    socket.on('start:' + quizId, () => {
+    socket.on(`start:${quizId}`, () => {
       setIsStarted(true)
     })
 
-    socket.on('start:question:' + quizId, (args: QuestionStart) => {
-      const question = questions.find(e => e.id == args.questionId)
+    socket.on(`start:question:${quizId}`, (args: QuestionStart) => {
+      const question = questions.find(e => e.id === args.questionId)
       if (question) {
         setCurrentQuestion(question)
         setIsStarted(true)
@@ -87,7 +89,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
 
         timer = setInterval(() => {
           setTime(time => {
-            if (time == 0) {
+            if (time === 0) {
               clearTimeout(timer)
 
               return 0
@@ -99,20 +101,20 @@ export const QuizView = ({ quiz, questions }: Props) => {
       }
     })
 
-    socket.on('finish:question:' + quizId, () => {
+    socket.on(`finish:question:${quizId}`, () => {
       if (timer) clearTimeout(timer)
       setTime(0)
     })
 
-    socket.on('close:' + quizId, () => {
+    socket.on(`close:${quizId}`, () => {
       setIsStarted(false)
     })
 
     if (!isQuizOwner) socket.emit('join', { quizId, memberId })
 
     return () => {
-      socket.off('join:' + quizId)
-      socket.off('leave:' + quizId)
+      socket.off(`join:${quizId}`)
+      socket.off(`leave:${quizId}`)
       socket.off('members')
       socket.off('connect')
 
@@ -141,7 +143,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
         </div>
       ) : (
         <div className="flex w-full flex-col gap-1 p-2">
-          <h2 className="text-primary text-lg font-semibold tracking-wide">
+          <h2 className="font-semibold text-lg text-primary tracking-wide">
             {quiz.title}
           </h2>
 
@@ -159,7 +161,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
           <Separator className="my-3" />
 
           {isQuizOwner ? (
-            <Button onClick={handleStartQuiz} disabled={members.length == 0}>
+            <Button onClick={handleStartQuiz} disabled={members.length === 0}>
               INICIAR
             </Button>
           ) : (

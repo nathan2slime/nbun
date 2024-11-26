@@ -3,21 +3,21 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Patch,
   Post,
-  Res,
-  UseGuards,
   Req,
-  Patch
+  Res,
+  UseGuards
 } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
-import { AuthGuard } from '@nestjs/passport'
 
-import { AuthService } from '~/app/auth/auth.service'
 import { SignInDto, SignUpDto } from '~/app/auth/auth.dto'
-import { Request } from '~/types/app.types'
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
+import { AuthService } from '~/app/auth/auth.service'
 import { env } from '~/env'
+import { Request } from '~/types/app.types'
 
 @Controller('auth')
 @ApiTags('Auth')

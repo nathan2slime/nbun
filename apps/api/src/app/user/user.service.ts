@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common'
 import { Prisma, User } from '@nbun/database'
+import { Injectable } from '@nestjs/common'
 
 import { SignUpDto } from '~/app/auth/auth.dto'
 import { PrismaService } from '~/database/prisma.service'

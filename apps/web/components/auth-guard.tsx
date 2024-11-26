@@ -1,16 +1,16 @@
 import {
-  dehydrate,
   HydrationBoundary,
-  QueryClient
+  QueryClient,
+  dehydrate
 } from '@tanstack/react-query'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import { AppChildren } from '~/types'
-import { Session } from '~/types/auth.types'
+import { refreshSessionMutation } from '~/api/mutations/refresh-session.mutation'
 import { getSesssionQuery } from '~/api/queries/get-session.query'
 import { AuthProvider } from '~/components/auth-state'
-import { refreshSessionMutation } from '~/api/mutations/refresh-session.mutation'
+import { AppChildren } from '~/types'
+import { Session } from '~/types/auth.types'
 
 export const AuthGuard = async ({ children }: AppChildren) => {
   const header = await headers()

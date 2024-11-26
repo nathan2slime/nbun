@@ -4,12 +4,13 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "prepare": "husky",
     "start": "dotenv -- turbo run start",
     "dev": "dotenv -- turbo run dev",
     "build": "dotenv -- turbo run build",
-    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "db:migrate:dev": "dotenv -- turbo run db:migrate:dev",
+    "lint": "biome check --fix --unsafe",
+    "format": "biome format --write",
+    "prepare": "lefthook install",
+    "db:migrate:dev": "dotenv -- turbo run db:migrate:dev --ui=tui",
     "studio": "dotenv -- turbo run studio",
     "db:migrate:deploy": "dotenv -- turbo run db:migrate:deploy",
     "db:generate": "dotenv -- turbo run db:generate",
@@ -23,18 +24,16 @@
     }
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "dotenv-cli": "^7.4.4",
-    "husky": "^9.1.7",
     "turbo": "^2.3.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@commitlint/cli": "^17.8.1",
+    "dotenv-cli": "^7.4.4",
     "@commitlint/config-conventional": "^17.8.1",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
-    "prettier": "^3.4.0",
-    "prettier-plugin-tailwindcss": "^0.6.9"
+    "lefthook": "1.8.4"
   },
   "packageManager": "pnpm@9.10.0"
 }

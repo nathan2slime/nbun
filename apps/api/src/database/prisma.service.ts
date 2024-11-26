@@ -1,5 +1,5 @@
-import { Injectable, OnModuleInit } from '@nestjs/common'
 import { PrismaClient } from '@nbun/database'
+import { Injectable, OnModuleInit } from '@nestjs/common'
 
 import { logger } from '~/logger'
 

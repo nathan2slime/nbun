@@ -14,7 +14,7 @@ export const QuizUser = ({ userId }: Props) => {
 
   if (user) {
     return (
-      <div className="bg-card flex w-full items-center justify-start gap-2 rounded-lg border p-2">
+      <div className="flex w-full items-center justify-start gap-2 rounded-lg border bg-card p-2">
         <Avatar>
           <AvatarImage src={'/assets/'.concat(user.avatar).concat('.jpg')} />
         </Avatar>

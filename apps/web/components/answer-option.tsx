@@ -6,7 +6,7 @@ type Props = {
 
 export const AnswerOption = ({ data }: Props) => {
   return (
-    <div className="bg-accent text-accent-foreground flex w-full justify-center gap-2 rounded-lg p-4">
+    <div className="flex w-full justify-center gap-2 rounded-lg bg-accent p-4 text-accent-foreground">
       {data.title}
     </div>
   )

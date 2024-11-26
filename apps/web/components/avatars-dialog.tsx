@@ -3,8 +3,8 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogTitle,
   DialogHeader,
+  DialogTitle,
   DialogTrigger
 } from '~/components/ui/dialog'
 import { avatars } from '~/lib/avatars'
@@ -32,9 +32,9 @@ export const AvatarsDialog = ({ children, avatar, onChange }: Props) => {
           <div className="flex flex-wrap gap-2">
             {avatars.map(currentAvatar => (
               <AvatarButton
-                key={'dialog_' + currentAvatar}
+                key={`dialog_${currentAvatar}`}
                 onClick={() => onChange(currentAvatar)}
-                active={currentAvatar == avatar}
+                active={currentAvatar === avatar}
                 src={'/assets/'.concat(currentAvatar).concat('.jpg')}
                 title={currentAvatar}
               />

@@ -1,6 +1,6 @@
 'use client'
 
-import { authState, AuthState } from '~/store/auth.state'
+import { AuthState, authState } from '~/store/auth.state'
 import { AppChildren } from '~/types'
 
 type Props = AppChildren<{
