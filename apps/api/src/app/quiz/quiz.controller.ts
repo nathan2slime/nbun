@@ -47,6 +47,11 @@ export class QuizController {
     return this.quizService.start(headers['quiz-id'])
   }
 
+  @Get('form/:id')
+  async getForm(@Param('id') id: string) {
+    return this.quizService.getForm(id)
+  }
+
   @ApiHeader({ name: 'quiz-id' })
   @Put('update')
   @UseInterceptors(QuizInterceptor)

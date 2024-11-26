@@ -11,11 +11,11 @@ model Quiz {
 
   questions Question[]
   responses QuizResponse[]
-  createdBy User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdBy User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   startAt   DateTime?
 
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Question {
@@ -23,11 +23,12 @@ model Question {
   title  String
   quizId String
 
-  difficulty Difficulty @default(MEDIUM)
+  difficulty Difficulty     @default(MEDIUM)
+  questionOptionId String
 
-  quiz      Quiz               @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  options   QuestionOption[]
-  responses QuestionResponse[]
+  quiz             Quiz               @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  options          QuestionOption[]
+  responses        QuestionResponse[]
 }
 
 model QuestionOption {

@@ -1,13 +1,6 @@
-import { QuestionQuizFormData } from '~/lib/schemas/quiz.schemas'
+import { QuestionOption } from '@nbun/database'
 
-export type Quiz = {
-  id: string
-  title: string
-  userId: string
-  createdAt: Date
-  updatedAt: Date
-  startAt: Date | null
-}
+import { QuestionQuizFormData } from '~/lib/schemas/quiz.schemas'
 
 export type UpdateQuizPayload = CreateQuizPayload
 
@@ -22,6 +15,7 @@ export type QuestionQuizResponse = {
   title: string
   quizId: string
   difficulty: Difficulty
+  options: OptionResponse
 }
 
 export enum Difficulty {
@@ -30,15 +24,8 @@ export enum Difficulty {
   EASY = 'EASY'
 }
 
-export type CreateOptionPayload = {
-  title: string
-  questionId: string
-  quizId: string
-}
-
-export type OptionResponse = CreateOptionPayload & {
-  id: string
-}
+export type CreateOptionPayload = Omit<QuestionOption, 'id'>
+export type OptionResponse = QuestionOption
 
 export type UpdateOptionPayload = {
   title: string

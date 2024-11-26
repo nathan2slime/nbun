@@ -27,6 +27,19 @@ export class QuizService {
     })
   }
 
+  async getForm(id: string) {
+    return this.prisma.quiz.findUnique({
+      where: { id },
+      include: {
+        questions: {
+          include: {
+            options: true
+          }
+        }
+      }
+    })
+  }
+
   async getByUser(userId: string) {
     return this.prisma.quiz.findMany({
       where: {
