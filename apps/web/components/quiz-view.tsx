@@ -1,6 +1,6 @@
 'use client'
 
-import { Question, Quiz } from '@nbun/database'
+import { Question, QuestionOption, Quiz } from '@nbun/database'
 import { useEffect, useState } from 'react'
 import { useSnapshot } from 'valtio'
 
@@ -23,8 +23,10 @@ type QuestionStart = {
   questionId: string
 }
 
+type Questions = Question & { options: QuestionOption[] }
+
 type Props = {
-  questions: Question[]
+  questions: Questions[]
   quiz: Quiz
 }
 
@@ -32,11 +34,11 @@ export const QuizView = ({ quiz, questions }: Props) => {
   const { session: data } = useSnapshot(authState)
 
   const [members, setMembers] = useState<string[]>([])
-  const [currentQuestion, setCurrentQuestion] = useState<Question>()
+  const [currentQuestion, setCurrentQuestion] = useState<Questions>()
   const [isStarted, setIsStarted] = useState(false)
-  const [timer, setTimer] = useState(0)
+  const [time, setTime] = useState(0)
 
-  let questionTimer: NodeJS.Timeout | undefined = undefined
+  let timer: NodeJS.Timeout | undefined = undefined
 
   const memberId = data!.userId
   const quizId = quiz.id
@@ -71,7 +73,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
         memberId
       })
 
-    socket.on('start:' + quizId, args => {
+    socket.on('start:' + quizId, () => {
       setIsStarted(true)
     })
 
@@ -81,12 +83,12 @@ export const QuizView = ({ quiz, questions }: Props) => {
         setCurrentQuestion(question)
         setIsStarted(true)
 
-        setTimer(args.time)
+        setTime(args.time)
 
-        questionTimer = setInterval(() => {
-          setTimer(time => {
+        timer = setInterval(() => {
+          setTime(time => {
             if (time == 0) {
-              clearTimeout(questionTimer)
+              clearTimeout(timer)
 
               return 0
             }
@@ -96,10 +98,12 @@ export const QuizView = ({ quiz, questions }: Props) => {
         }, 1000)
       }
     })
-    socket.on('finish:question:' + quizId, args => {
-      if (questionTimer) clearTimeout(questionTimer)
-      setTimer(0)
+
+    socket.on('finish:question:' + quizId, () => {
+      if (timer) clearTimeout(timer)
+      setTime(0)
     })
+
     socket.on('close:' + quizId, () => {
       setIsStarted(false)
     })
@@ -125,10 +129,14 @@ export const QuizView = ({ quiz, questions }: Props) => {
 
   return (
     <div>
-      {!isQuizOwner && isStarted ? (
+      {isStarted ? (
         <div className="">
           {currentQuestion && (
-            <AnswerQuestion timer={timer} question={currentQuestion} />
+            <AnswerQuestion
+              options={currentQuestion.options}
+              timer={time}
+              question={currentQuestion}
+            />
           )}
         </div>
       ) : (
