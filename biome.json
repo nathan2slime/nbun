@@ -29,6 +29,7 @@
         "useSortedClasses": "warn"
       },
       "correctness": {
+        "noUnusedImports": "error",
         "useExhaustiveDependencies": "off"
       },
       "style": {
