@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import {
-  GetWebSocketSessionDto,
-  WebSocketSessionDto
-} from '~/app/websocket-session/websocket-session.dto'
+import { WebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
 import { redisClient } from '~/database/redis'
 
 @Injectable()

@@ -88,6 +88,9 @@ export class QuizGateway implements OnGatewayDisconnect {
     }
   }
 
+  @SubscribeMessage('answer')
+  async answer(@MessageBody() data: QuizIdDto) {}
+
   @SubscribeMessage('start')
   async start(@MessageBody() data: QuizIdDto) {
     if (this.times.has(data.quizId)) return
@@ -97,7 +100,11 @@ export class QuizGateway implements OnGatewayDisconnect {
 
     this.server.emit(`start:${data.quizId}`)
 
+    let timer: NodeJS.Timeout
+
     for (const gameRule of gameRules) {
+      if (timer) clearTimeout(timer)
+
       const index = gameRules.indexOf(gameRule)
 
       const { id: questionId } = gameRule
@@ -113,7 +120,7 @@ export class QuizGateway implements OnGatewayDisconnect {
 
         this.server.emit(`start:question:${data.quizId}`, payload)
 
-        setTimeout(() => {
+        timer = setTimeout(() => {
           this.server.emit(`finish:question:${data.quizId}`, payload)
 
           resolve(true)
