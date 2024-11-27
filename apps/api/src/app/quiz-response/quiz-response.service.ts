@@ -16,6 +16,28 @@ export class QuizResponseService {
     })
   }
 
+  async findOrCreate(data: CreateQuizResponseDto) {
+    return this.prisma.quizResponse.upsert({
+      where: {
+        userId: data.userId,
+        quizId: data.quizId
+      },
+      update: {},
+      create: {
+        quiz: {
+          connect: {
+            id: data.quizId
+          }
+        },
+        user: {
+          connect: {
+            id: data.userId
+          }
+        }
+      }
+    })
+  }
+
   async create(data: CreateQuizResponseDto) {
     return this.prisma.quizResponse.create({
       data: {

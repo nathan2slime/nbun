@@ -6,6 +6,7 @@ import { PrismaService } from '~/database/prisma.service'
 
 @Module({
   imports: [QuizResponseModule],
-  providers: [PrismaService, QuestionResponseService]
+  providers: [PrismaService, QuestionResponseService],
+  exports: [QuestionResponseService]
 })
 export class QuestionResponseModule {}

@@ -17,7 +17,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
           if (req) {
             const data = req.cookies[env.AUTH_COOKIE]
 
-            if (data?.refreshToken) return data.refreshToken
+            if (data.refreshToken) return data.refreshToken
           }
 
           return null

@@ -1,7 +1,8 @@
-import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common'
+import { Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common'
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
@@ -11,17 +12,25 @@ import {
 import { Observable, from } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Server, Socket } from 'socket.io'
-
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
+
+import { QuestionResponseService } from '~/app/question-response/question-response.service'
 import { QuestionService } from '~/app/question/question.service'
 import { QuizMemberService } from '~/app/quiz-member/quiz-member.service'
-import { JoinMemberDto, QuizIdDto } from '~/app/quiz/quiz.dto'
+import { QuizScoreService } from '~/app/quiz-score/quiz-score.service'
+import {
+  JoinMemberDto,
+  QuizIdDto,
+  SocketQuestionResponse
+} from '~/app/quiz/quiz.dto'
 import { QuizService } from '~/app/quiz/quiz.service'
 import { PayloadQuestionTime } from '~/app/quiz/quiz.type'
 import { GetWebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
 import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
 
 import { env } from '~/env'
+import { logger } from '~/logger'
+import { Request } from '~/types/app.types'
 
 @WebSocketGateway({
   cors: {
@@ -31,12 +40,14 @@ import { env } from '~/env'
 })
 @UsePipes(ValidationPipe)
 @UseGuards(JwtAuthGuard)
-export class QuizGateway implements OnGatewayDisconnect {
+export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(
     private readonly quizMemberService: QuizMemberService,
     private readonly quizService: QuizService,
     private readonly questionService: QuestionService,
-    private readonly webSocketSessionService: WebSocketSessionService
+    private readonly quizScoreService: QuizScoreService,
+    private readonly webSocketSessionService: WebSocketSessionService,
+    private readonly questionResponseService: QuestionResponseService
   ) {}
 
   private times: Map<string, PayloadQuestionTime> = new Map()
@@ -55,6 +66,10 @@ export class QuizGateway implements OnGatewayDisconnect {
       await this.quizMemberService.remove(connection)
       this.server.emit(`leave:${connection.quizId}`, connection)
     }
+  }
+
+  handleConnection(client: Socket) {
+    logger.info(`new client connected ${client.id}`)
   }
 
   @SubscribeMessage('onquiz')
@@ -88,8 +103,29 @@ export class QuizGateway implements OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage('answer')
-  async answer(@MessageBody() data: QuizIdDto) {}
+  @SubscribeMessage('response')
+  async answer(
+    @MessageBody() { difficulty, isCorrect, ...data }: SocketQuestionResponse,
+    @Req() req: Request
+  ) {
+    const session = req.user
+
+    const userId = session.userId
+
+    if (isCorrect) {
+      const newScore = this.questionService.scoringRule[difficulty]
+
+      const score = await this.quizScoreService.updateScore({
+        quizId: data.quizId,
+        userId,
+        newScore
+      })
+
+      this.server.emit(`quiz:answer:${data.quizId}`, { score, userId })
+    }
+
+    await this.questionResponseService.create(data, userId)
+  }
 
   @SubscribeMessage('start')
   async start(@MessageBody() data: QuizIdDto) {
