@@ -7,7 +7,7 @@
     "start": "dotenv -- turbo run start",
     "dev": "dotenv -- turbo run dev",
     "build": "dotenv -- turbo run build",
-    "lint": "biome check --fix --unsafe",
+    "lint": "biome check",
     "format": "biome format --write",
     "prepare": "lefthook install",
     "db:migrate:dev": "dotenv -- turbo run db:migrate:dev --ui=tui",

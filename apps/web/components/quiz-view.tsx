@@ -80,6 +80,9 @@ export const QuizView = ({ quiz, questions }: Props) => {
     })
 
     socket.on(`start:question:${quizId}`, (args: QuestionStart) => {
+      if (timer) clearInterval(timer)
+      console.log(args, timer)
+
       const question = questions.find(e => e.id === args.questionId)
       if (question) {
         setCurrentQuestion(question)
@@ -90,7 +93,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
         timer = setInterval(() => {
           setTime(time => {
             if (time === 0) {
-              clearTimeout(timer)
+              clearInterval(timer)
 
               return 0
             }
@@ -102,7 +105,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
     })
 
     socket.on(`finish:question:${quizId}`, () => {
-      if (timer) clearTimeout(timer)
+      if (timer) clearInterval(timer)
       setTime(0)
     })
 
@@ -117,6 +120,8 @@ export const QuizView = ({ quiz, questions }: Props) => {
       socket.off(`leave:${quizId}`)
       socket.off('members')
       socket.off('connect')
+
+      timer && clearTimeout(timer)
 
       setMembers([])
       socket.disconnect()
