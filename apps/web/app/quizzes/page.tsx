@@ -1,9 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
 
 import { getMyQuizzesQuery } from '~/api/queries/get-my-quizzes.query'
-import { CardQuiz } from '~/components/card-quiz'
 import { CreateQuiz } from '~/components/create-quiz'
-import { DeleteQuiz } from '~/components/delete-quiz'
 import { FeedQuiz } from '~/components/feed-quiz'
 import { Separator } from '~/components/ui/separator'
 

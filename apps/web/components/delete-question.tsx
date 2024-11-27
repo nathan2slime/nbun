@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Trash } from 'lucide-react'
-import { Dispatch, SetStateAction, useContext } from 'react'
+import { useContext } from 'react'
 
 import { deleteQuestionMutation } from '~/api/mutations/quiz/question/delete-question.mutation'
 import { EditQuizContext } from '~/components/edit-quiz'
