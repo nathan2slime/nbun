@@ -24,7 +24,7 @@ import { Request } from '~/types/app.types'
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiResponse({
     status: 200
   })

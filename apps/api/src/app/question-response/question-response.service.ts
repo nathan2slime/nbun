@@ -1,4 +1,3 @@
-import { QuizResponse } from '@nbun/database'
 import { Injectable } from '@nestjs/common'
 
 import { CreateQuestionResponseDto } from '~/app/question-response/question-response.dto'
@@ -16,25 +15,39 @@ export class QuestionResponseService {
     { quizId, questionOptionId, questionId }: CreateQuestionResponseDto,
     userId: string
   ) {
-    let quizResponse: QuizResponse | undefined = undefined
+    const quizResponse = await this.quizResponse.findOrCreate({
+      quizId,
+      userId
+    })
 
-    quizResponse = await this.quizResponse.findBy({ quizId, userId })
+    const response = await this.findByUserAndQuestion(userId, questionId)
 
-    if (!quizResponse)
-      quizResponse = await this.quizResponse.create({ quizId, userId })
-
-    return this.prisma.questionResponse.create({
-      data: {
-        quizResponse: { connect: { id: quizResponse.id } },
-        selectedOption: {
-          connect: {
-            id: questionOptionId
+    return (
+      response ??
+      this.prisma.questionResponse.create({
+        data: {
+          quizResponse: { connect: { id: quizResponse.id } },
+          selectedOption: {
+            connect: {
+              id: questionOptionId
+            }
+          },
+          question: {
+            connect: {
+              id: questionId
+            }
           }
-        },
-        question: {
-          connect: {
-            id: questionId
-          }
+        }
+      })
+    )
+  }
+
+  async findByUserAndQuestion(userId: string, questionId: string) {
+    return this.prisma.questionResponse.findFirst({
+      where: {
+        questionId,
+        quizResponse: {
+          userId
         }
       }
     })

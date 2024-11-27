@@ -1,5 +1,7 @@
+import { Difficulty } from '@nbun/database'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsOptional, IsString, IsUUID } from 'class-validator'
+import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator'
+import { CreateQuestionResponseDto } from '~/app/question-response/question-response.dto'
 
 export class CreateQuizDto {
   @ApiProperty()
@@ -24,6 +26,15 @@ export class JoinMemberDto {
 export class QuizIdDto {
   @IsString()
   quizId: string
+}
+
+export class SocketQuestionResponse extends CreateQuestionResponseDto {
+  @IsBoolean()
+  isCorrect: boolean
+
+  @IsOptional()
+  @ApiProperty({ required: false, enum: Difficulty })
+  difficulty: Difficulty
 }
 
 export class QuizHeader {

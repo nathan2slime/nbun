@@ -39,7 +39,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           if (cookies) {
             const data = cookies[env.AUTH_COOKIE]
 
-            if (data?.accessToken) return data.accessToken
+            if (data.accessToken) return data.accessToken
           }
 
           return null
