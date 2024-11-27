@@ -1,5 +1,7 @@
-const Ranking = () => {
-  return <div />
+const Profile = () => {
+  return <div>
+    profile
+  </div>
 }
 
-export default Ranking
+export default Profile

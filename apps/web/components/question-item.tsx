@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import {
@@ -65,6 +65,9 @@ export const QuestionItem = ({ question, position }: Props) => {
   const formValues = form.watch()
 
   const questionOptions = getOptions.data
+  const [isCorrect, setIsCorrect] = useState(
+    questionOptions?.find(ques => ques.correct === true)?.id
+  )
 
   const onUpdateQuestion = (payload: UpdateQuestion) => {
     queryClient.setQueryData(
@@ -91,7 +94,6 @@ export const QuestionItem = ({ question, position }: Props) => {
 
   const onEditDifficulty = (value: string) => {
     form.setValue('difficulty', value as Difficulty, { shouldValidate: true })
-
     onEditQuestion()
   }
 
@@ -145,6 +147,8 @@ export const QuestionItem = ({ question, position }: Props) => {
         <QuestionOption
           key={option.id}
           questionId={question.id}
+          isCorrect={isCorrect === option.id}
+          setCorrectFn={setIsCorrect}
           data={option}
         />
       ))}
