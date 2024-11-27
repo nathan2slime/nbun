@@ -6,10 +6,12 @@ import {
   UpdateQuestion,
   updateQuestionMutate
 } from '~/api/mutations/quiz/question/update-question.mutation'
-import { Input } from '~/components/ui/input'
-import { Difficulty, QuestionQuizResponse } from '~/types/quiz.types'
+import { getOptionsQuery } from '~/api/queries/get-options.query'
 import { CreateOption } from '~/components/create-option'
 import { DeleteQuestion } from '~/components/delete-question'
+import { EditQuizContext } from '~/components/edit-quiz'
+import { QuestionOption } from '~/components/question-option'
+import { Input } from '~/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -20,9 +22,7 @@ import {
   SelectValue
 } from '~/components/ui/select'
 import { DIFFICULTIES } from '~/constants'
-import { EditQuizContext } from '~/components/edit-quiz'
-import { getOptionsQuery } from '~/api/queries/get-options.query'
-import { QuestionOption } from '~/components/question-option'
+import { Difficulty, QuestionQuizResponse } from '~/types/quiz.types'
 
 type Props = {
   question: QuestionQuizResponse
@@ -70,7 +70,7 @@ export const QuestionItem = ({ question, position }: Props) => {
     queryClient.setQueryData(
       ['get-questions', quizId],
       (questions: QuestionQuizResponse[]) =>
-        (questions || []).map(e => (e.id == question.id ? payload : e))
+        (questions || []).map(e => (e.id === question.id ? payload : e))
     )
   }
 
@@ -96,10 +96,10 @@ export const QuestionItem = ({ question, position }: Props) => {
   }
 
   return (
-    <div className="bg-accent/60 flex flex-col gap-2 rounded-md border p-2">
+    <div className="flex flex-col gap-2 rounded-md border bg-accent/60 p-2">
       <div className="flex w-full justify-between gap-2">
         <div className="flex w-full items-center gap-2">
-          <span className="text-primary text-lg font-bold">{position + 1}</span>
+          <span className="font-bold text-lg text-primary">{position + 1}</span>
           <Input
             onBlur={onEditQuestion}
             onChange={e =>
@@ -124,7 +124,7 @@ export const QuestionItem = ({ question, position }: Props) => {
         >
           <SelectTrigger
             onChange={onEditQuestion}
-            className="bg-background w-full"
+            className="w-full bg-background"
           >
             <SelectValue placeholder="Dificuldade" />
           </SelectTrigger>
@@ -141,14 +141,13 @@ export const QuestionItem = ({ question, position }: Props) => {
         </Select>
       </div>
 
-      {questionOptions &&
-        questionOptions.map(option => (
-          <QuestionOption
-            key={option.id}
-            questionId={question.id}
-            data={option}
-          />
-        ))}
+      {questionOptions?.map(option => (
+        <QuestionOption
+          key={option.id}
+          questionId={question.id}
+          data={option}
+        />
+      ))}
     </div>
   )
 }

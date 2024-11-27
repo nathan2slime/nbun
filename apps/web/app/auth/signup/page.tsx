@@ -1,17 +1,20 @@
 'use client'
 
-import { NextPage } from 'next'
-import { Plus } from 'lucide-react'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
+import { Plus } from 'lucide-react'
+import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
+import { signUpMutation } from '~/api/mutations/signup.mutation'
 import { AvatarButton } from '~/components/avatar-button'
-import { Input } from '~/components/ui/input'
+import { AvatarsDialog } from '~/components/avatars-dialog'
+import { Props } from '~/components/loading'
+import { Button } from '~/components/ui/button'
 import {
   Form,
   FormControl,
@@ -20,14 +23,11 @@ import {
   FormLabel,
   FormMessage
 } from '~/components/ui/form'
-import { signUpSchema, SignUpSchema } from '~/lib/schemas/auth.schemas'
-import { Button } from '~/components/ui/button'
-import { avatars } from '~/lib/avatars'
-import { AvatarsDialog } from '~/components/avatars-dialog'
-import { signUpMutation } from '~/api/mutations/signup.mutation'
-import { Props } from '~/components/loading'
-import { authState } from '~/store/auth.state'
+import { Input } from '~/components/ui/input'
 import { Separator } from '~/components/ui/separator'
+import { avatars } from '~/lib/avatars'
+import { SignUpSchema, signUpSchema } from '~/lib/schemas/auth.schemas'
+import { authState } from '~/store/auth.state'
 
 const SignUp: NextPage = () => {
   const mutation = useMutation({
@@ -76,14 +76,14 @@ const SignUp: NextPage = () => {
   }
 
   return (
-    <div className="bg-background flex h-screen w-screen flex-col items-center justify-center p-4">
+    <div className="flex h-screen w-screen flex-col items-center justify-center bg-background p-4">
       <Form {...form}>
         <form
-          className="bg-card border-border flex w-full max-w-sm flex-col items-center rounded-lg border p-6 shadow-sm"
+          className="flex w-full max-w-sm flex-col items-center rounded-lg border border-border bg-card p-6 shadow-sm"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="mb-3 flex w-full flex-col items-start justify-center gap-1">
-            <h1 className="text-primary text-start text-2xl font-semibold">
+            <h1 className="text-start font-semibold text-2xl text-primary">
               Bem-vindo
             </h1>
             <p className="text-base">Comece criando seu perfil</p>
@@ -95,13 +95,13 @@ const SignUp: NextPage = () => {
                 ? avatars.slice(0, 3)
                 : [
                     values.avatar,
-                    ...avatars.filter(e => e != values.avatar).slice(0, 2)
+                    ...avatars.filter(e => e !== values.avatar).slice(0, 2)
                   ]
               ).map((avatar, i) => (
                 <AvatarButton
-                  key={avatar + i}
+                  key={`${avatar}_avatar`}
                   onClick={() => setValue('avatar', avatar)}
-                  active={avatar == values.avatar}
+                  active={avatar === values.avatar}
                   src={'/assets/'.concat(avatar).concat('.jpg')}
                   title={avatar}
                 />
@@ -163,7 +163,7 @@ const SignUp: NextPage = () => {
 
             <Separator className="my-6" />
 
-            <Link href="/auth/signing" className="w-full text-sm font-semibold">
+            <Link href="/auth/signing" className="w-full font-semibold text-sm">
               <Button className="w-full" variant="outline">
                 Login
               </Button>

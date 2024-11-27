@@ -33,7 +33,7 @@ const Page: NextPage<Props> = async ({ params }) => {
             </Button>
           </Link>
 
-          <h1 className="text-lg font-semibold tracking-wide">Editar</h1>
+          <h1 className="font-semibold text-lg tracking-wide">Editar</h1>
         </div>
 
         <Separator className="my-3" />

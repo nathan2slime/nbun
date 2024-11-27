@@ -5,10 +5,8 @@ import {
   Get,
   HttpException,
   HttpStatus,
-  Param,
   Post,
   Put,
-  Query,
   UseGuards,
   UseInterceptors
 } from '@nestjs/common'
@@ -18,7 +16,6 @@ import { JwtAuthGuard } from '~/app/auth/auth.guard'
 import { RequestHeaders } from '~/app/decorators/header.decorator'
 import {
   CreateQuestionOptionDto,
-  QueryQuestionOptionDto,
   QuestionOptionHeader,
   UpdateQuestionOptionDto
 } from '~/app/question-option/question-option.dto'

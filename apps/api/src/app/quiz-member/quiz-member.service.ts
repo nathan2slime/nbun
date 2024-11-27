@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { QuizIdDto, JoinMemberDto } from '~/app/quiz/quiz.dto'
+import { JoinMemberDto, QuizIdDto } from '~/app/quiz/quiz.dto'
 import { redisClient } from '~/database/redis'
 
 @Injectable()

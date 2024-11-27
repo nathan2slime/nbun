@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common'
 import { Session } from '@nbun/database'
+import { Injectable } from '@nestjs/common'
 
 import { CreateQuizDto, UpdateQuizDto } from '~/app/quiz/quiz.dto'
 import { PrismaService } from '~/database/prisma.service'
@@ -79,7 +79,7 @@ export class QuizService {
       where: { userId, id: quizId }
     })
 
-    return count == 1
+    return count === 1
   }
 
   async isQuestionOptionOwner(
@@ -105,7 +105,7 @@ export class QuizService {
       }
     })
 
-    return count == 1
+    return count === 1
   }
 
   async isQuestionOwner(quizId: string, questionId: string, userId: string) {
@@ -121,7 +121,7 @@ export class QuizService {
       }
     })
 
-    return count == 1
+    return count === 1
   }
 
   async start(id: string) {

@@ -5,7 +5,6 @@ import { ptBR } from 'date-fns/locale'
 import { MoreVertical } from 'lucide-react'
 import Link from 'next/link'
 
-import { Quiz } from '~/types/quiz.types'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import {
   DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu'
 import { cn } from '~/lib/utils'
+import { Quiz } from '~/types/quiz.types'
 
 type Props = {
   data: Quiz
@@ -21,14 +21,14 @@ type Props = {
 export const CardQuiz = ({ data }: Props) => {
   return (
     <Link
-      href={'/quizzes/game/' + data.id}
+      href={`/quizzes/game/${data.id}`}
       className={cn(
-        'bg-accent/50 rounded-md p-3',
+        'rounded-md bg-accent/50 p-3',
         data.startAt && 'bg-primary/30'
       )}
     >
       <div className="flex w-full items-center justify-between">
-        <h1 className="text-foreground/80 text-base font-medium tracking-wide">
+        <h1 className="font-medium text-base text-foreground/80 tracking-wide">
           {data.title}
         </h1>
         <DropdownMenu>
@@ -36,10 +36,10 @@ export const CardQuiz = ({ data }: Props) => {
             <MoreVertical strokeWidth={1.6} width={22} />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <Link href={'/quizzes/edit/' + data.id}>
+            <Link href={`/quizzes/edit/${data.id}`}>
               <DropdownMenuItem>Editar</DropdownMenuItem>
             </Link>
-            <Link href={'/quizzes?delete=' + data.id}>
+            <Link href={`/quizzes?delete=${data.id}`}>
               <DropdownMenuItem className="bg-destructive text-destructive-foreground">
                 Excluir
               </DropdownMenuItem>

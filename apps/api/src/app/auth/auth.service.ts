@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { Session } from '@nbun/database'
-import { hash, compare } from 'bcryptjs'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { compare, hash } from 'bcryptjs'
 
 import { SignInDto, SignUpDto } from '~/app/auth/auth.dto'
 import { SessionService } from '~/app/session/session.service'

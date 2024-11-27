@@ -22,7 +22,7 @@ export const CreateQuiz = () => {
       },
       {
         onSuccess(data) {
-          router.push('/quizzes/edit/' + data.id)
+          router.push(`/quizzes/edit/${data.id}`)
         }
       }
     )

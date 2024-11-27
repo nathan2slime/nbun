@@ -24,7 +24,7 @@ export const DeleteOption = ({ optionId, questionId }: Props) => {
   const updateRemoveOption = () =>
     queryClient.setQueryData(
       ['get-options', questionId],
-      (prev: OptionResponse[]) => (prev || []).filter(e => e.id != optionId)
+      (prev: OptionResponse[]) => (prev || []).filter(e => e.id !== optionId)
     )
 
   const deleteOption = () => {

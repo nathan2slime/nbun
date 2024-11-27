@@ -59,7 +59,7 @@ export const EditQuiz = (props: Props) => {
     <EditQuizContext.Provider value={{ quizId: quiz.id }}>
       <div className="flex flex-col gap-2">
         <Input
-          className="bg-secondary h-12 px-3 py-4 text-lg font-semibold"
+          className="h-12 bg-secondary px-3 py-4 font-semibold text-lg"
           onBlur={updateQuiz}
           placeholder="Assunto"
           value={quiz.title || ''}
@@ -67,7 +67,7 @@ export const EditQuiz = (props: Props) => {
         />
 
         <div className="mt-3 flex items-center justify-between rounded-lg p-2">
-          <h1 className="text-base font-medium tracking-wide">Questões</h1>
+          <h1 className="font-medium text-base tracking-wide">Questões</h1>
 
           <CreateQuestion
             onCreated={question =>
@@ -79,14 +79,9 @@ export const EditQuiz = (props: Props) => {
           />
         </div>
 
-        {questions &&
-          questions.map((question, idx) => (
-            <QuestionItem
-              position={idx}
-              key={question.id}
-              question={question}
-            />
-          ))}
+        {questions?.map((question, idx) => (
+          <QuestionItem position={idx} key={question.id} question={question} />
+        ))}
       </div>
     </EditQuizContext.Provider>
   )

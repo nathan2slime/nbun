@@ -1,6 +1,6 @@
+import { config } from 'dotenv'
 import { parseEnv } from 'znv'
 import { z } from 'zod'
-import { config } from 'dotenv'
 
 config({
   path: ['.env.local', '.env', '.env.development.local']
@@ -24,4 +24,4 @@ const envSchema = {
 }
 
 export const env =
-  NODE_ENV == 'test' ? process.env : parseEnv(process.env, envSchema)
+  NODE_ENV === 'test' ? process.env : parseEnv(process.env, envSchema)

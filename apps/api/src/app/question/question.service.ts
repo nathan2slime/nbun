@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common'
 import { Difficulty } from '@nbun/database'
+import { Injectable } from '@nestjs/common'
 
 import {
   CreateQuestionDto,

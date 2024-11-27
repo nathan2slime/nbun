@@ -1,11 +1,11 @@
 'use client'
 
+import { CircleUser, HomeIcon, Layers, Medal } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
-import { CircleUser, Layers, HomeIcon, Medal } from 'lucide-react'
 
-import { cn } from '~/lib/utils'
 import Link from 'next/link'
+import { cn } from '~/lib/utils'
 
 type Item = {
   icon: ReactNode
@@ -42,18 +42,18 @@ export const TabBar = () => {
   ]
 
   return (
-    <div className="bg-card border-t-border fixed bottom-0 right-0 flex h-[75px] w-full justify-between gap-2 border-t p-2">
+    <div className="fixed right-0 bottom-0 flex h-[75px] w-full justify-between gap-2 border-t border-t-border bg-card p-2">
       {items.map(e => {
         const isActive =
-          e.path == '/' ? pathname == e.path : pathname.includes(e.path)
+          e.path === '/' ? pathname === e.path : pathname.includes(e.path)
         return (
           <Link
             href={e.path}
             className={cn(
               isActive
-                ? 'text-primary font-semibold'
-                : 'text-card-foreground/75 font-medium',
-              'bg-background flex w-full flex-col items-center justify-center gap-1 rounded-lg p-3 text-xs tracking-wide'
+                ? 'font-semibold text-primary'
+                : 'font-medium text-card-foreground/75',
+              'flex w-full flex-col items-center justify-center gap-1 rounded-lg bg-background p-3 text-xs tracking-wide'
             )}
             key={e.path}
           >

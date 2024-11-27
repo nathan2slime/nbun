@@ -1,13 +1,13 @@
-import { ExtractJwt, Strategy } from 'passport-jwt'
-import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { PassportStrategy } from '@nestjs/passport'
 import { parse } from 'cookie'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 
-import { JwtAuthPayload } from '~/types/auth.types'
 import { SessionService } from '~/app/session/session.service'
 import { env } from '~/env'
-import { Request } from '~/types/app.types'
 import { logger } from '~/logger'
+import { Request } from '~/types/app.types'
+import { JwtAuthPayload } from '~/types/auth.types'
 
 const getWsCookies = (req: Request) => {
   try {
@@ -39,7 +39,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           if (cookies) {
             const data = cookies[env.AUTH_COOKIE]
 
-            if (data && data.accessToken) return data.accessToken
+            if (data?.accessToken) return data.accessToken
           }
 
           return null
