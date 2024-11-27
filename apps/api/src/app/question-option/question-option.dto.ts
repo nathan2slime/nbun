@@ -14,8 +14,12 @@ export class CreateQuestionOptionDto {
 
 export class UpdateQuestionOptionDto {
   @IsOptional()
-  @ApiProperty()
+  @ApiProperty({ required: false })
   title: string
+
+  @IsOptional()
+  @ApiProperty({ required: false })
+  correct: boolean
 }
 
 export class QueryQuestionOptionDto {

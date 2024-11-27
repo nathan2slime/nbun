@@ -26,19 +26,19 @@ model Question {
   difficulty Difficulty @default(MEDIUM)
 
   quiz      Quiz               @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  options   QuestionOption[]  
+  options   QuestionOption[]
   responses QuestionResponse[]
 }
 
 model QuestionOption {
   id         String @id @default(uuid())
   title      String
-  questionId String @unique
+  questionId String
 
   correct Boolean @default(false)
 
-  question          Question           @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  responses         QuestionResponse[]
+  question  Question           @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  responses QuestionResponse[]
 }
 
 model QuizResponse {
