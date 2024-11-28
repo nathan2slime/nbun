@@ -15,15 +15,15 @@ export class QuestionService {
   maxOptions = 4
 
   timeRule: Record<Difficulty, number> = {
-    EASY: 10,
-    MEDIUM: 10,
-    HARD: 10
+    EASY: 30,
+    MEDIUM: 60,
+    HARD: 75
   }
 
   scoringRule: Record<Difficulty, number> = {
-    EASY: 1,
-    HARD: 2,
-    MEDIUM: 3
+    EASY: 5,
+    HARD: 10,
+    MEDIUM: 15
   }
 
   getMaxOptions() {

@@ -6,7 +6,6 @@ import { useSnapshot } from 'valtio'
 
 import { socket } from '~/api/client'
 import { AnswerQuestion } from '~/components/answer-question'
-import { QuizScoreTable } from '~/components/quiz-score-table'
 import { QuizUser } from '~/components/quiz-user'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
@@ -20,50 +19,65 @@ type Connection = {
 
 type QuestionWithOption = Question & { options: QuestionOption[] }
 
+type Ranking = {
+  pontuation: number
+  userId: string
+}
+
+type Answer = {
+  score: number
+  userId: string
+}
+
 type Props = {
   questions: QuestionWithOption[]
   quiz: Quiz
+  ranking: Ranking[]
+}
+
+type GameRule = {
+  time: number
+  id: string
+  difficulty: Difficulty
 }
 
 type GameSettings = {
   time: number
-
-  rules: {
-    time: number
-    id: string
-    difficulty: Difficulty
-  }[]
+  rules: GameRule[]
 }
 
-export const QuizView = ({ quiz, questions }: Props) => {
+export const QuizView = ({ quiz, questions, ...props }: Props) => {
   const { session: data } = useSnapshot(authState)
+  const memberId = data!.userId
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>()
-  const [members, setMembers] = useState<string[]>([])
+  const [members, setMembers] = useState([...props.ranking])
   const [isStarted, setIsStarted] = useState(false)
+  const [isAnswered, setIsAnswered] = useState(
+    !!members.find(e => e.userId === memberId)
+  )
+
   const [settings, setSettings] = useState<GameSettings>()
   const [time, setTime] = useState<number>()
 
-  const handleNext = useRef<Promise<unknown> | null>(null)
   const quizTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const memberId = data!.userId
   const quizId = quiz.id
 
   const isQuizOwner = memberId === quiz.userId
 
   const addNewMember = (data: string) => {
     setMembers(prev => {
-      const item = prev.find(e => e === data)
+      const item = prev.find(e => e.userId === data)
       if (item) return prev
 
-      return [...prev, data]
+      return [...prev, { userId: data, pontuation: 0 }]
     })
   }
 
   const deleteMember = (connection: Connection) => {
     setMembers(prev =>
-      prev.filter(memberId => memberId !== connection.memberId)
+      prev.filter(({ userId }) => userId !== connection.memberId)
     )
   }
 
@@ -75,17 +89,18 @@ export const QuizView = ({ quiz, questions }: Props) => {
     }
   }
 
-  useEffect(() => {}, [currentQuestionIndex])
-
   const onTime = async (
     settings: GameSettings,
     question: QuestionWithOption,
     isLastQuestion: boolean = false
   ) => {
-    setCurrentQuestionIndex(questions.indexOf(question))
+    const questionIndex = questions.indexOf(question)
+    setCurrentQuestionIndex(questionIndex)
     const gameRule = settings.rules.find(e => e.id === question.id)
 
     if (gameRule) {
+      gameRule.time = gameRule.time + 1
+
       clearQuizTimeout()
       setTime(gameRule.time)
 
@@ -105,9 +120,23 @@ export const QuizView = ({ quiz, questions }: Props) => {
       })
 
       if (isLastQuestion) {
-        setIsStarted(false)
+        onEndQuiz()
+      } else {
+        // Recursive on time ended
+
+        const nextQuestionIndex = (questionIndex || 0) + 1
+        const _isLastQuestion = nextQuestionIndex >= questions.length
+
+        onTime(settings, questions[nextQuestionIndex]!, _isLastQuestion)
       }
     }
+  }
+
+  const onEndQuiz = () => {
+    socket.off(`start:${quizId}`)
+    socket.off(`close:${quizId}`)
+    setIsStarted(false)
+    setIsAnswered(true)
   }
 
   useEffect(() => {
@@ -142,6 +171,16 @@ export const QuizView = ({ quiz, questions }: Props) => {
       })
     }
 
+    socket.on(`quiz:answer:${quizId}`, async (args: Answer) => {
+      setMembers(e =>
+        e.map(i =>
+          i.userId === args.userId
+            ? { pontuation: args.score, userId: args.userId }
+            : i
+        )
+      )
+    })
+
     return () => {
       socket.off(`join:${quizId}`)
       socket.off(`leave:${quizId}`)
@@ -149,7 +188,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
       socket.off('connect')
 
       clearQuizTimeout()
-      setMembers([])
+      setMembers(props.ranking)
       socket.disconnect()
     }
   }, [])
@@ -189,7 +228,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
           clearTimeout(quizTimeoutRef.current)
 
           if (isLastQuestion) {
-            setIsStarted(false)
+            onEndQuiz()
           } else {
             onTime(settings, questions[nextQuestionIndex]!, isLastQuestion)
           }
@@ -198,28 +237,26 @@ export const QuizView = ({ quiz, questions }: Props) => {
     }
   }
 
+  const isViewAnswer = isStarted && !isQuizOwner
+
   return (
     <div>
-      {isStarted ? (
-        isQuizOwner ? (
-          <QuizScoreTable />
-        ) : (
-          <div>
-            {currentQuestion && (
-              <AnswerQuestion
-                options={currentQuestion.options}
-                timer={time}
-                onAnswer={questionOptionId => {
-                  const nextQuestionIndex = (currentQuestionIndex || 0) + 1
-                  const isLastQuestion = nextQuestionIndex >= questions.length
+      {isViewAnswer ? (
+        <div>
+          {currentQuestion && (
+            <AnswerQuestion
+              options={currentQuestion.options}
+              timer={time}
+              onAnswer={questionOptionId => {
+                const nextQuestionIndex = (currentQuestionIndex || 0) + 1
+                const isLastQuestion = nextQuestionIndex >= questions.length
 
-                  onAnswer(questionOptionId, isLastQuestion, nextQuestionIndex)
-                }}
-                question={currentQuestion}
-              />
-            )}
-          </div>
-        )
+                onAnswer(questionOptionId, isLastQuestion, nextQuestionIndex)
+              }}
+              question={currentQuestion}
+            />
+          )}
+        </div>
       ) : (
         <div className="flex w-full flex-col gap-1 p-2">
           <h2 className="font-semibold text-lg text-primary tracking-wide">
@@ -232,19 +269,30 @@ export const QuizView = ({ quiz, questions }: Props) => {
             <span className="text-foreground text-sm tracking-wide">
               Membros
             </span>
-            {members.map(userId => (
-              <QuizUser key={userId} userId={userId} />
-            ))}
+            {members.map(user => {
+              return (
+                <QuizUser
+                  points={user.pontuation}
+                  key={user.userId}
+                  userId={user.userId}
+                />
+              )
+            })}
           </div>
 
           <Separator className="my-3" />
 
           {isQuizOwner ? (
-            <Button onClick={handleStartQuiz} disabled={members.length === 0}>
-              INICIAR
+            <Button
+              onClick={handleStartQuiz}
+              disabled={(!!quiz.startAt || isStarted) ?? members.length === 0}
+            >
+              {quiz.startAt ? 'Quiz finalizado' : 'Iniciar'}
             </Button>
           ) : (
-            <Button>Aguardando</Button>
+            <Button variant="outline" className="uppercase">
+              {isAnswered ? 'Você respondeu tudo' : 'Aguardando o professor'}
+            </Button>
           )}
         </div>
       )}

@@ -36,7 +36,7 @@ export class QuizScoreService {
 
     return res.map(({ value, score }, index) => ({
       rank: index + 1,
-      playerId: value,
+      userId: value,
       score
     }))
   }
