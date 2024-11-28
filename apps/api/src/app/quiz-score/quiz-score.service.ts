@@ -20,6 +20,17 @@ export class QuizScoreService {
     return redisClient.zRank(this.getKey(quizId), userId)
   }
 
+  async delete(quizId: string) {
+    const key = this.getKey(quizId)
+    const members = await redisClient.zRange(key, 0, -1)
+
+    if (members.length > 0) {
+      for (const member of members) {
+        await redisClient.zRevRank(key, member)
+      }
+    }
+  }
+
   async getRanking(quizId: string) {
     const res = await redisClient.zRangeWithScores(this.getKey(quizId), 0, -1)
 
