@@ -1,11 +1,12 @@
 'use client'
 
-import { Question, QuestionOption, Quiz } from '@nbun/database'
-import { useEffect, useState } from 'react'
+import { Difficulty, Question, QuestionOption, Quiz } from '@nbun/database'
+import { useEffect, useRef, useState } from 'react'
 import { useSnapshot } from 'valtio'
 
 import { socket } from '~/api/client'
 import { AnswerQuestion } from '~/components/answer-question'
+import { QuizScoreTable } from '~/components/quiz-score-table'
 import { QuizUser } from '~/components/quiz-user'
 import { Button } from '~/components/ui/button'
 import { Separator } from '~/components/ui/separator'
@@ -17,30 +18,34 @@ type Connection = {
   clientId: string
 }
 
-type QuestionStart = {
-  at: Date
-  time: number
-  questionId: string
-}
-
-type Questions = Question & { options: QuestionOption[] }
+type QuestionWithOption = Question & { options: QuestionOption[] }
 
 type Props = {
-  questions: Questions[]
+  questions: QuestionWithOption[]
   quiz: Quiz
+}
+
+type GameSettings = {
+  time: number
+
+  rules: {
+    time: number
+    id: string
+    difficulty: Difficulty
+  }[]
 }
 
 export const QuizView = ({ quiz, questions }: Props) => {
   const { session: data } = useSnapshot(authState)
 
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>()
   const [members, setMembers] = useState<string[]>([])
-  const [currentQuestion, setCurrentQuestion] = useState<Questions>()
   const [isStarted, setIsStarted] = useState(false)
-  const [time, setTime] = useState(0)
+  const [time, setTime] = useState<number>()
 
-  let timer: NodeJS.Timeout | undefined = undefined
+  const quizTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  const memberId = data?.userId
+  const memberId = data!.userId
   const quizId = quiz.id
 
   const isQuizOwner = memberId === quiz.userId
@@ -60,60 +65,63 @@ export const QuizView = ({ quiz, questions }: Props) => {
     )
   }
 
+  const clearQuizTimeout = () => {
+    setTime(0)
+
+    if (quizTimeoutRef.current) {
+      clearTimeout(quizTimeoutRef.current)
+    }
+  }
+
+  useEffect(() => {}, [currentQuestionIndex])
+
   useEffect(() => {
     if (socket.disconnected) socket.connect()
 
     socket.emit('members', { quizId })
     socket.on('members', addNewMember)
-
     socket.on(`join:${quizId}`, addNewMember)
     socket.on(`leave:${quizId}`, deleteMember)
+    socket.on(`start:${quizId}`, () => setIsStarted(true))
+    socket.on(`close:${quizId}`, () => setIsStarted(false))
+    socket.emit('onquiz', {
+      quizId,
+      memberId
+    })
 
-    if (!isQuizOwner)
-      socket.emit('onquiz', {
-        quizId,
-        memberId
+    if (!isQuizOwner) {
+      socket.emit('join', { quizId, memberId })
+
+      socket.on(`start:${quizId}`, async (settings: GameSettings) => {
+        for (const question of questions) {
+          setCurrentQuestionIndex(questions.indexOf(question))
+          const gameRule = settings.rules.find(e => e.id === question.id)
+          if (gameRule) {
+            clearQuizTimeout()
+            setTime(gameRule.time)
+
+            await new Promise(resolve => {
+              quizTimeoutRef.current = setInterval(() => {
+                setTime(time => {
+                  if (time === 0) {
+                    resolve(true)
+                    clearQuizTimeout()
+
+                    return undefined
+                  }
+
+                  return time ? time - 1 : gameRule.time
+                })
+              }, 1000)
+            })
+          }
+        }
       })
 
-    socket.on(`start:${quizId}`, () => {
-      setIsStarted(true)
-    })
-
-    socket.on(`start:question:${quizId}`, (args: QuestionStart) => {
-      if (timer) clearInterval(timer)
-      console.log(args, timer)
-
-      const question = questions.find(e => e.id === args.questionId)
-      if (question) {
-        setCurrentQuestion(question)
-        setIsStarted(true)
-
-        setTime(args.time)
-
-        timer = setInterval(() => {
-          setTime(time => {
-            if (time === 0) {
-              clearInterval(timer)
-
-              return 0
-            }
-
-            return time - 1
-          })
-        }, 1000)
-      }
-    })
-
-    socket.on(`finish:question:${quizId}`, () => {
-      if (timer) clearInterval(timer)
-      setTime(0)
-    })
-
-    socket.on(`close:${quizId}`, () => {
-      setIsStarted(false)
-    })
-
-    if (!isQuizOwner) socket.emit('join', { quizId, memberId })
+      socket.on(`close:${quizId}`, () => {
+        clearQuizTimeout()
+      })
+    }
 
     return () => {
       socket.off(`join:${quizId}`)
@@ -121,8 +129,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
       socket.off('members')
       socket.off('connect')
 
-      timer && clearTimeout(timer)
-
+      clearQuizTimeout()
       setMembers([])
       socket.disconnect()
     }
@@ -134,18 +141,37 @@ export const QuizView = ({ quiz, questions }: Props) => {
     })
   }
 
+  const currentQuestion = questions[currentQuestionIndex || 0]!
+
+  const onAnswer = (questionOptionId: string) => {
+    if (currentQuestion) {
+      const questionOption = currentQuestion.options.find(
+        e => e.id === questionOptionId
+      )
+
+      if (questionOption) {
+        socket.emit('')
+      }
+    }
+  }
+
   return (
     <div>
       {isStarted ? (
-        <div className="">
-          {currentQuestion && (
-            <AnswerQuestion
-              options={currentQuestion.options}
-              timer={time}
-              question={currentQuestion}
-            />
-          )}
-        </div>
+        isQuizOwner ? (
+          <QuizScoreTable />
+        ) : (
+          <div>
+            {currentQuestion && (
+              <AnswerQuestion
+                options={currentQuestion.options}
+                timer={time}
+                onAnswer={onAnswer}
+                question={currentQuestion}
+              />
+            )}
+          </div>
+        )
       ) : (
         <div className="flex w-full flex-col gap-1 p-2">
           <h2 className="font-semibold text-lg text-primary tracking-wide">

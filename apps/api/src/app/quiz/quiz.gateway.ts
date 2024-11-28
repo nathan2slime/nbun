@@ -24,7 +24,6 @@ import {
   SocketQuestionResponse
 } from '~/app/quiz/quiz.dto'
 import { QuizService } from '~/app/quiz/quiz.service'
-import { PayloadQuestionTime } from '~/app/quiz/quiz.type'
 import { GetWebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
 import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
 
@@ -50,7 +49,7 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
     private readonly questionResponseService: QuestionResponseService
   ) {}
 
-  private times: Map<string, PayloadQuestionTime> = new Map()
+  private times: Map<string, true> = new Map()
 
   @WebSocketServer()
   server: Server
@@ -134,39 +133,19 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
     await this.quizService.start(data.quizId)
     const gameRules = await this.questionService.getGameRule(data.quizId)
 
-    this.server.emit(`start:${data.quizId}`)
+    const time = gameRules.reduce((acc, e) => acc + e.time, 0)
+    this.server.emit(`start:${data.quizId}`, { rules: gameRules, time })
 
-    let timer: NodeJS.Timeout
+    await new Promise(resolve => {
+      this.times.set(data.quizId, true)
 
-    for (const gameRule of gameRules) {
-      if (timer) clearTimeout(timer)
+      setTimeout(() => {
+        resolve(true)
+      }, time * 1000)
+    })
 
-      const index = gameRules.indexOf(gameRule)
+    this.server.emit(`close:${data.quizId}`)
 
-      const { id: questionId } = gameRule
-
-      const payload: PayloadQuestionTime = {
-        time: gameRule.time,
-        questionId,
-        at: new Date()
-      }
-
-      await new Promise<boolean>(resolve => {
-        this.times.set(data.quizId, payload)
-
-        this.server.emit(`start:question:${data.quizId}`, payload)
-
-        timer = setTimeout(() => {
-          this.server.emit(`finish:question:${data.quizId}`, payload)
-
-          resolve(true)
-        }, gameRule.time * 1000)
-      })
-
-      if (index === gameRules.length - 1) {
-        this.times.delete(data.quizId)
-        this.server.emit(`close:${data.quizId}`)
-      }
-    }
+    this.times.delete(data.quizId)
   }
 }
