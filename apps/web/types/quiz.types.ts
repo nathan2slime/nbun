@@ -4,6 +4,10 @@ import { QuestionQuizFormData } from '~/lib/schemas/quiz.schemas'
 
 export type UpdateQuizPayload = CreateQuizPayload
 
+export type Quiz = CreateQuizPayload & {
+  id: string
+}
+
 export type CreateQuizPayload = {
   title: string
 }
@@ -30,4 +34,5 @@ export type OptionResponse = QuestionOption
 export type UpdateOptionPayload = {
   title: string
   id: string
+  correct: boolean
 }
