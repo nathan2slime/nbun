@@ -111,6 +111,7 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
     const { difficulty, isCorrect, ...data } = args
 
     const userId = session.userId
+    logger.info(args)
 
     if (isCorrect) {
       const newScore = this.questionService.scoringRule[difficulty]
@@ -121,10 +122,16 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
         newScore
       })
 
-      this.server.emit(`quiz:answer:${data.quizId}`, { score, userId })
+      this.server.emit(`quiz:answer:${data.quizId}`, {
+        score,
+        userId
+      })
+      await this.questionResponseService.create(data, userId, newScore)
+      console.log('create rank for user', data, score)
+    } else {
+      logger.info('user not have rank')
+      await this.questionResponseService.create(data, userId, 0)
     }
-
-    await this.questionResponseService.create(data, userId)
   }
 
   @SubscribeMessage('start')
@@ -146,7 +153,7 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
 
     this.server.emit(`close:${data.quizId}`)
-
+    this.quizService.finish(data.quizId)
     this.times.delete(data.quizId)
   }
 }

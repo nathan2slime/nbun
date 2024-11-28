@@ -21,6 +21,15 @@ export class QuizService {
     })
   }
 
+  async finish(id: string) {
+    return this.prisma.quiz.update({
+      where: { id },
+      data: {
+        startAt: new Date()
+      }
+    })
+  }
+
   async getById(id: string) {
     return this.prisma.quiz.findUnique({
       where: { id }

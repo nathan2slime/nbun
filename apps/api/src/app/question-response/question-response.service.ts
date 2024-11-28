@@ -13,7 +13,8 @@ export class QuestionResponseService {
 
   async create(
     { quizId, questionOptionId, questionId }: CreateQuestionResponseDto,
-    userId: string
+    userId: string,
+    pontuation: number
   ) {
     const quizResponse = await this.quizResponse.findOrCreate({
       quizId,
@@ -26,6 +27,7 @@ export class QuestionResponseService {
       response ??
       this.prisma.questionResponse.create({
         data: {
+          pontuation,
           quizResponse: { connect: { id: quizResponse.id } },
           selectedOption: {
             connect: {

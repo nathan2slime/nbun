@@ -31,30 +31,28 @@ export const AnswerQuestion = ({
   const progressValue = (timer / initialTime) * 100
 
   return (
-    timer > 0 && (
-      <div className="flex w-full flex-col items-center justify-start p-4">
-        <Progress value={progressValue} />
+    <div className="flex w-full flex-col items-center justify-start p-4">
+      <Progress value={progressValue} />
 
-        <Separator className="my-2" />
+      <Separator className="my-2" />
 
-        <div className="flex w-full items-center justify-start gap-2">
-          <Badge className="flex w-full max-w-14 items-center justify-center p-2 text-lg">
-            {timer}
-          </Badge>
+      <div className="flex w-full items-center justify-start gap-2">
+        <Badge className="flex w-full max-w-14 items-center justify-center p-2 text-lg">
+          {timer}
+        </Badge>
 
-          <h2 className="text-start font-bold text-primary text-xl tracking-wide">
-            {question.title}
-          </h2>
-        </div>
-
-        <Separator className="my-2" />
-
-        <div className="mt-4 flex w-full flex-col gap-3">
-          {options.map(e => (
-            <AnswerOption onClick={() => onAnswer(e.id)} key={e.id} data={e} />
-          ))}
-        </div>
+        <h2 className="text-start font-bold text-primary text-xl tracking-wide">
+          {question.title}
+        </h2>
       </div>
-    )
+
+      <Separator className="my-2" />
+
+      <div className="mt-4 flex w-full flex-col gap-3">
+        {options.map(e => (
+          <AnswerOption onClick={() => onAnswer(e.id)} key={e.id} data={e} />
+        ))}
+      </div>
+    </div>
   )
 }

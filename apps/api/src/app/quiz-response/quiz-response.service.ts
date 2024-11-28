@@ -12,30 +12,33 @@ export class QuizResponseService {
 
   async findBy(data: WhereQuizResponseDto) {
     return this.prisma.quizResponse.findFirst({
-      where: data
+      where: data,
+      include: {
+        responses: true
+      }
+    })
+  }
+
+  async paginate(quizId: string) {
+    return this.prisma.quizResponse.findMany({
+      where: {
+        quizId
+      },
+      include: {
+        responses: true
+      }
     })
   }
 
   async findOrCreate(data: CreateQuizResponseDto) {
-    return this.prisma.quizResponse.upsert({
+    const res = await this.prisma.quizResponse.findFirst({
       where: {
         userId: data.userId,
         quizId: data.quizId
-      },
-      update: {},
-      create: {
-        quiz: {
-          connect: {
-            id: data.quizId
-          }
-        },
-        user: {
-          connect: {
-            id: data.userId
-          }
-        }
       }
     })
+
+    return res ?? this.create(data)
   }
 
   async create(data: CreateQuizResponseDto) {

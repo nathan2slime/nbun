@@ -43,12 +43,12 @@ model QuestionOption {
 
 model QuizResponse {
   id     String @id @default(uuid())
-  userId String @unique
+  userId String
 
   quiz      Quiz               @relation(fields: [quizId], references: [id])
   user      User               @relation(fields: [userId], references: [id])
   responses QuestionResponse[]
-  quizId    String @unique
+  quizId    String
 }
 
 model QuestionResponse {
@@ -56,6 +56,7 @@ model QuestionResponse {
   quizResponseId   String
   questionId       String
   selectedOptionId String
+  pontuation Int @default(0)
 
   quizResponse   QuizResponse   @relation(fields: [quizResponseId], references: [id])
   question       Question       @relation(fields: [questionId], references: [id])

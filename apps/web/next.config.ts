@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: true
   },
   output: 'standalone',
+  reactStrictMode: false,
   typescript: {
     ignoreBuildErrors: true
   }
