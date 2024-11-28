@@ -1,6 +1,6 @@
 'use client'
 
-import { Question, QuestionOption, Quiz } from '@nbun/database'
+import { Difficulty, Question, QuestionOption, Quiz } from '@nbun/database'
 import { useEffect, useRef, useState } from 'react'
 import { useSnapshot } from 'valtio'
 
@@ -25,15 +25,25 @@ type Props = {
   quiz: Quiz
 }
 
+type GameSettings = {
+  time: number
+
+  rules: {
+    time: number
+    id: string
+    difficulty: Difficulty
+  }[]
+}
+
 export const QuizView = ({ quiz, questions }: Props) => {
   const { session: data } = useSnapshot(authState)
 
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>()
   const [members, setMembers] = useState<string[]>([])
   const [isStarted, setIsStarted] = useState(false)
-  const [time, setTime] = useState(0)
+  const [time, setTime] = useState<number>()
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const quizTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const memberId = data!.userId
   const quizId = quiz.id
@@ -55,13 +65,15 @@ export const QuizView = ({ quiz, questions }: Props) => {
     )
   }
 
-  const clearTimeout = () => {
+  const clearQuizTimeout = () => {
     setTime(0)
 
-    if (timeoutRef.current) {
-      clearInterval(timeoutRef.current)
+    if (quizTimeoutRef.current) {
+      clearTimeout(quizTimeoutRef.current)
     }
   }
+
+  useEffect(() => {}, [currentQuestionIndex])
 
   useEffect(() => {
     if (socket.disconnected) socket.connect()
@@ -80,24 +92,34 @@ export const QuizView = ({ quiz, questions }: Props) => {
     if (!isQuizOwner) {
       socket.emit('join', { quizId, memberId })
 
-      socket.on(`start:${quizId}`, (time: number) => {
-        clearTimeout()
+      socket.on(`start:${quizId}`, async (settings: GameSettings) => {
+        for (const question of questions) {
+          setCurrentQuestionIndex(questions.indexOf(question))
+          const gameRule = settings.rules.find(e => e.id === question.id)
+          if (gameRule) {
+            clearQuizTimeout()
+            setTime(gameRule.time)
 
-        timeoutRef.current = setTimeout(() => {
-          setTime(time => {
-            if (time === 0) {
-              clearTimeout()
+            await new Promise(resolve => {
+              quizTimeoutRef.current = setInterval(() => {
+                setTime(time => {
+                  if (time === 0) {
+                    resolve(true)
+                    clearQuizTimeout()
 
-              return 0
-            }
+                    return undefined
+                  }
 
-            return time - 1
-          })
-        }, time * 1000)
+                  return time ? time - 1 : gameRule.time
+                })
+              }, 1000)
+            })
+          }
+        }
       })
 
       socket.on(`close:${quizId}`, () => {
-        clearTimeout()
+        clearQuizTimeout()
       })
     }
 
@@ -107,7 +129,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
       socket.off('members')
       socket.off('connect')
 
-      clearTimeout()
+      clearQuizTimeout()
       setMembers([])
       socket.disconnect()
     }
@@ -119,7 +141,7 @@ export const QuizView = ({ quiz, questions }: Props) => {
     })
   }
 
-  const currentQuestion = questions[currentQuestionIndex]!
+  const currentQuestion = questions[currentQuestionIndex || 0]!
 
   const onAnswer = (questionOptionId: string) => {
     if (currentQuestion) {

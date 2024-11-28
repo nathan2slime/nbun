@@ -134,7 +134,7 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
     const gameRules = await this.questionService.getGameRule(data.quizId)
 
     const time = gameRules.reduce((acc, e) => acc + e.time, 0)
-    this.server.emit(`start:${data.quizId}`, time)
+    this.server.emit(`start:${data.quizId}`, { rules: gameRules, time })
 
     await new Promise(resolve => {
       this.times.set(data.quizId, true)
@@ -144,7 +144,7 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
       }, time * 1000)
     })
 
-    this.server.emit(`close:quiz:${data.quizId}`)
+    this.server.emit(`close:${data.quizId}`)
 
     this.times.delete(data.quizId)
   }

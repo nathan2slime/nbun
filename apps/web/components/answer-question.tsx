@@ -4,7 +4,7 @@ import { AnswerOption } from '~/components/answer-option'
 type Props = {
   question: Question
   options: QuestionOption[]
-  timer: number
+  timer: number | undefined
   onAnswer: (id: string) => unknown
 }
 
@@ -16,9 +16,11 @@ export const AnswerQuestion = ({
 }: Props) => {
   return (
     <div className="flex w-full flex-col items-center justify-start p-4">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full border bg-primary font-bold text-primary-foreground">
-        {timer}
-      </div>
+      {timer && (
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border bg-primary font-bold text-primary-foreground">
+          {timer}
+        </div>
+      )}
 
       <h2 className="mt-3 font-medium text-2xl text-primary">
         {question.title}
