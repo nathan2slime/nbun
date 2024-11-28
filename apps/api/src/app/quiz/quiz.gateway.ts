@@ -104,10 +104,11 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   @SubscribeMessage('response')
   async answer(
-    @MessageBody() { difficulty, isCorrect, ...data }: SocketQuestionResponse,
+    @MessageBody() args: SocketQuestionResponse,
     @Req() req: Request
   ) {
     const session = req.user
+    const { difficulty, isCorrect, ...data } = args
 
     const userId = session.userId
 

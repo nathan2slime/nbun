@@ -48,9 +48,7 @@ const Profile = () => {
 
   const values = form.watch()
 
-  const changeProfile = (values: ProfileSchema) => {
-    console.log(values)
-  }
+  const changeProfile = (values: ProfileSchema) => {}
 
   return (
     <div className="min-h-screen w-full p-3">

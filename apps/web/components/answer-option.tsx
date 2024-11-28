@@ -9,7 +9,7 @@ export const AnswerOption = ({ data, ...props }: Props) => {
   return (
     <div
       {...props}
-      className="flex w-full justify-center gap-2 rounded-lg bg-accent p-4 text-accent-foreground"
+      className="flex w-full items-start justify-start gap-2 rounded-lg bg-accent p-4 text-start text-accent-foreground uppercase"
     >
       {data.title}
     </div>

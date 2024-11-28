@@ -57,7 +57,7 @@ export class SessionService {
       this.getCacheKey(session.id),
       JSON.stringify(session),
       {
-        EX: 3600
+        EX: Math.floor(require('ms')(env.REFRESH_TOKEN_EXPIRES_IN) / 1000)
       }
     )
 
@@ -95,7 +95,7 @@ export class SessionService {
         this.getCacheKey(data.id),
         JSON.stringify(session),
         {
-          EX: 3600
+          EX: Math.floor(require('ms')(env.REFRESH_TOKEN_EXPIRES_IN) / 1000)
         }
       )
 
@@ -134,7 +134,7 @@ export class SessionService {
         this.getCacheKey(data.id),
         JSON.stringify(session),
         {
-          EX: 3600
+          EX: Math.floor(require('ms')(env.REFRESH_TOKEN_EXPIRES_IN) / 1000)
         }
       )
 

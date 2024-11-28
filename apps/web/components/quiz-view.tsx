@@ -41,8 +41,10 @@ export const QuizView = ({ quiz, questions }: Props) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>()
   const [members, setMembers] = useState<string[]>([])
   const [isStarted, setIsStarted] = useState(false)
+  const [settings, setSettings] = useState<GameSettings>()
   const [time, setTime] = useState<number>()
 
+  const handleNext = useRef<Promise<unknown> | null>(null)
   const quizTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const memberId = data!.userId
@@ -75,6 +77,39 @@ export const QuizView = ({ quiz, questions }: Props) => {
 
   useEffect(() => {}, [currentQuestionIndex])
 
+  const onTime = async (
+    settings: GameSettings,
+    question: QuestionWithOption,
+    isLastQuestion: boolean = false
+  ) => {
+    setCurrentQuestionIndex(questions.indexOf(question))
+    const gameRule = settings.rules.find(e => e.id === question.id)
+
+    if (gameRule) {
+      clearQuizTimeout()
+      setTime(gameRule.time)
+
+      await new Promise(resolve => {
+        quizTimeoutRef.current = setInterval(() => {
+          setTime(time => {
+            if (time === 0) {
+              resolve(true)
+              clearQuizTimeout()
+
+              return undefined
+            }
+
+            return time ? time - 1 : gameRule.time
+          })
+        }, 1000)
+      })
+
+      if (isLastQuestion) {
+        setIsStarted(false)
+      }
+    }
+  }
+
   useEffect(() => {
     if (socket.disconnected) socket.connect()
 
@@ -92,34 +127,18 @@ export const QuizView = ({ quiz, questions }: Props) => {
     if (!isQuizOwner) {
       socket.emit('join', { quizId, memberId })
 
-      socket.on(`start:${quizId}`, async (settings: GameSettings) => {
-        for (const question of questions) {
-          setCurrentQuestionIndex(questions.indexOf(question))
-          const gameRule = settings.rules.find(e => e.id === question.id)
-          if (gameRule) {
-            clearQuizTimeout()
-            setTime(gameRule.time)
+      socket.on(`start:${quizId}`, async (gameSettings: GameSettings) => {
+        setSettings(gameSettings)
+        const question = questions[0]
 
-            await new Promise(resolve => {
-              quizTimeoutRef.current = setInterval(() => {
-                setTime(time => {
-                  if (time === 0) {
-                    resolve(true)
-                    clearQuizTimeout()
-
-                    return undefined
-                  }
-
-                  return time ? time - 1 : gameRule.time
-                })
-              }, 1000)
-            })
-          }
+        if (question) {
+          onTime(gameSettings, question)
         }
       })
 
       socket.on(`close:${quizId}`, () => {
         clearQuizTimeout()
+        setIsStarted(false)
       })
     }
 
@@ -143,14 +162,38 @@ export const QuizView = ({ quiz, questions }: Props) => {
 
   const currentQuestion = questions[currentQuestionIndex || 0]!
 
-  const onAnswer = (questionOptionId: string) => {
-    if (currentQuestion) {
+  const onAnswer = (
+    questionOptionId: string,
+    isLastQuestion: boolean,
+    nextQuestionIndex: number
+  ) => {
+    if (currentQuestion && settings) {
+      const questionId = currentQuestion.id
       const questionOption = currentQuestion.options.find(
         e => e.id === questionOptionId
       )
 
       if (questionOption) {
-        socket.emit('')
+        const isCorrect = questionOption.correct
+        const difficulty = currentQuestion.difficulty
+
+        socket.emit('response', {
+          isCorrect,
+          difficulty,
+          quizId,
+          questionOptionId,
+          questionId
+        })
+
+        if (quizTimeoutRef.current) {
+          clearTimeout(quizTimeoutRef.current)
+
+          if (isLastQuestion) {
+            setIsStarted(false)
+          } else {
+            onTime(settings, questions[nextQuestionIndex]!, isLastQuestion)
+          }
+        }
       }
     }
   }
@@ -166,7 +209,12 @@ export const QuizView = ({ quiz, questions }: Props) => {
               <AnswerQuestion
                 options={currentQuestion.options}
                 timer={time}
-                onAnswer={onAnswer}
+                onAnswer={questionOptionId => {
+                  const nextQuestionIndex = (currentQuestionIndex || 0) + 1
+                  const isLastQuestion = nextQuestionIndex >= questions.length
+
+                  onAnswer(questionOptionId, isLastQuestion, nextQuestionIndex)
+                }}
                 question={currentQuestion}
               />
             )}
