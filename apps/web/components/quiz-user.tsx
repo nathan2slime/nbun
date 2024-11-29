@@ -1,4 +1,7 @@
+'use client'
+
 import { useQuery } from '@tanstack/react-query'
+
 import { getUserQuery } from '~/api/queries/get-user.query'
 import { Avatar, AvatarImage } from '~/components/ui/avatar'
 
