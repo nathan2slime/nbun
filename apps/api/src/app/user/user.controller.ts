@@ -14,4 +14,9 @@ export class UserController {
   async show(@Param('id') id: string) {
     return this.userService.getById(id)
   }
+
+  @Get('ranking')
+  async ranking() {
+    return this.userService.getRanking()
+  }
 }

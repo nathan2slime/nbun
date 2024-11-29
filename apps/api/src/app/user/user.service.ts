@@ -2,6 +2,7 @@ import { Prisma, User } from '@nbun/database'
 import { Injectable } from '@nestjs/common'
 
 import { SignUpDto } from '~/app/auth/auth.dto'
+import { UpdateUserDto } from '~/app/user/user.dto'
 import { PrismaService } from '~/database/prisma.service'
 import { exclude } from '~/database/utils'
 
@@ -31,6 +32,38 @@ export class UserService {
       select: {
         password: true
       }
+    })
+  }
+
+  async getExperience(id: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        id
+      },
+      select: {
+        experience: true
+      }
+    })
+  }
+
+  async getRanking() {
+    return this.prisma.user.findMany({
+      where: {
+        experience: {
+          gt: 1
+        }
+      },
+      select: {
+        experience: true,
+        id: true
+      }
+    })
+  }
+
+  async updateById(id: string, data: UpdateUserDto) {
+    return this.prisma.user.update({
+      where: { id },
+      data
     })
   }
 }

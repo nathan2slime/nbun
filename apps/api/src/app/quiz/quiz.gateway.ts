@@ -24,6 +24,7 @@ import {
   SocketQuestionResponse
 } from '~/app/quiz/quiz.dto'
 import { QuizService } from '~/app/quiz/quiz.service'
+import { UserService } from '~/app/user/user.service'
 import { GetWebSocketSessionDto } from '~/app/websocket-session/websocket-session.dto'
 import { WebSocketSessionService } from '~/app/websocket-session/websocket-session.service'
 
@@ -45,6 +46,7 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
     private readonly quizService: QuizService,
     private readonly questionService: QuestionService,
     private readonly quizScoreService: QuizScoreService,
+    private readonly userService: UserService,
     private readonly webSocketSessionService: WebSocketSessionService,
     private readonly questionResponseService: QuestionResponseService
   ) {}
@@ -127,7 +129,10 @@ export class QuizGateway implements OnGatewayDisconnect, OnGatewayConnection {
         userId
       })
       await this.questionResponseService.create(data, userId, newScore)
-      console.log('create rank for user', data, score)
+      const { experience } = await this.userService.getExperience(userId)
+      await this.userService.updateById(userId, {
+        experience: experience + newScore
+      })
     } else {
       logger.info('user not have rank')
       await this.questionResponseService.create(data, userId, 0)

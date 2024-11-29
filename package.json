@@ -9,7 +9,6 @@
     "build": "dotenv -- turbo run build",
     "lint": "biome check",
     "format": "biome format --write",
-    "prepare": "lefthook install",
     "db:migrate:dev": "dotenv -- turbo run db:migrate:dev --ui=tui",
     "studio": "dotenv -- turbo run studio",
     "db:migrate:deploy": "dotenv -- turbo run db:migrate:deploy",

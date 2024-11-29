@@ -8,6 +8,7 @@ import { QuizScoreModule } from '~/app/quiz-score/quiz-score.module'
 import { QuizController } from '~/app/quiz/quiz.controller'
 import { QuizGateway } from '~/app/quiz/quiz.gateway'
 import { QuizService } from '~/app/quiz/quiz.service'
+import { UserModule } from '~/app/user/user.module'
 import { WebSocketSessionModule } from '~/app/websocket-session/websocket-session.module'
 import { PrismaService } from '~/database/prisma.service'
 
@@ -16,6 +17,7 @@ import { PrismaService } from '~/database/prisma.service'
     QuizMemberModule,
     QuestionModule,
     QuizResponseModule,
+    UserModule,
     QuizScoreModule,
     QuestionResponseModule,
     WebSocketSessionModule
