@@ -3,6 +3,8 @@ import { QueryClient } from '@tanstack/react-query'
 import { getRankingQuery } from '~/api/queries/get-ranking.query'
 import { QuizUser } from '~/components/quiz-user'
 
+export const dynamic = 'force-dynamic'
+
 const Ranking = async () => {
   const client = new QueryClient()
 
